@@ -1,16 +1,3 @@
-// Social crawler user agents
-const CRAWLER_USER_AGENTS = [
-  'twitterbot',
-  'facebookexternalhit',
-  'linkedinbot',
-  'slackbot',
-  'discordbot',
-  'telegrambot',
-  'whatsapp',
-  'applebot',
-  'googlebot',
-];
-
 // Card-specific OG images (add entries as you create images)
 const CARD_IMAGES = {
   // 'tarot-card': '/og-images/tarot.png',
@@ -23,12 +10,6 @@ const DEFAULT_OG_IMAGE = '/og-image.png';
 const SITE_URL = 'https://gptinreview.com';
 const SITE_TITLE = 'GPT in Review';
 const SITE_DESCRIPTION = 'Reliving best moments with ChatGPT';
-
-function isCrawler(userAgent) {
-  if (!userAgent) return false;
-  const ua = userAgent.toLowerCase();
-  return CRAWLER_USER_AGENTS.some(crawler => ua.includes(crawler));
-}
 
 function getOgImageForCard(cardId) {
   if (cardId && CARD_IMAGES[cardId]) {
@@ -64,16 +45,10 @@ function injectOgTags(html, url, ogImage) {
 
 export async function onRequest(context) {
   const { request, next } = context;
-  const userAgent = request.headers.get('user-agent');
   const url = new URL(request.url);
 
   // Only intercept HTML requests to the root path
   if (url.pathname !== '/' && url.pathname !== '') {
-    return next();
-  }
-
-  // If not a crawler, serve normally
-  if (!isCrawler(userAgent)) {
     return next();
   }
 
