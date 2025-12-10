@@ -43,18 +43,54 @@
       "to": "2025-12-01"
     },
     "perspective": {
-      "cvsReceipt": "10,961",
-      "cvsNote": "17× St. Louis Archs",
-      "totalWords": "3.68M",
-      "bookPages": "14,720",
-      "bookName": "Don Quixote",
-      "bookRatio": "10.50x",
-      "bookWords": "~350,000 words each",
-      "tokens": "6.67M",
-      "energy": "120.06",
-      "energyFun": "0.09 lightning bolts",
-      "water": "216.11",
-      "waterFun": "54 snow globe refills"
+      "totalWords": 3680000,
+      "totalTokens": 6670000,
+      "cvsReceiptFeet": 10961,
+      "books": [
+        { "name": "War & Peace", "words": 587000 },
+        { "name": "Harry Potter septology", "words": 1084000 },
+        { "name": "Game of Thrones pentology", "words": 1770000 },
+        { "name": "Lord of the Rings trilogy", "words": 455000 },
+        { "name": "Les Misérables", "words": 560000 },
+        { "name": "Stephen King's IT", "words": 444000 },
+        { "name": "Atlas Shrugged", "words": 645000 },
+        { "name": "Infinite Jest", "words": 544000 }
+      ],
+      "cvsComparisons": [
+        { "name": "Golden Gate Bridges", "feet": 8981 },
+        { "name": "Eiffel Towers", "feet": 1063 },
+        { "name": "Empire State Buildings", "feet": 1454 },
+        { "name": "blue whales", "feet": 100 },
+        { "name": "Washington Monuments", "feet": 555 },
+        { "name": "St. Louis Archs", "feet": 630 },
+        { "name": "Burj Khalifas", "feet": 2717 },
+        { "name": "Statue of Liberty (with pedestal)", "feet": 360 },
+        { "name": "distance to the Moon", "feet": 1261154880 }
+      ],
+      "energyComparisons": [
+        { "name": "inflatable waving tube man hours", "singular": "inflatable waving tube man hour", "kwh": 0.15 },
+        { "name": "Christmas light display nights", "singular": "Christmas light display night", "kwh": 3.0 },
+        { "name": "hours of disco ball spinning", "singular": "hour of disco ball spinning", "kwh": 0.05 },
+        { "name": "lava lamp meditation sessions", "singular": "lava lamp meditation session", "kwh": 0.12 },
+        { "name": "DeLorean time travels", "singular": "DeLorean time travel", "kwh": 30000 },
+        { "name": "lightning bolts", "singular": "lightning bolt", "kwh": 1400 },
+        { "name": "toaster strudel preparations", "singular": "toaster strudel preparation", "kwh": 0.5 },
+        { "name": "moments of existential dread", "singular": "moment of existential dread", "kwh": 0.02 },
+        { "name": "ISS orbits", "singular": "ISS orbit", "kwh": 2500 },
+        { "name": "robot vacuum sessions", "singular": "robot vacuum session", "kwh": 0.3 }
+      ],
+      "waterComparisons": [
+        { "name": "golden retriever baths", "singular": "golden retriever bath", "ml": 40000 },
+        { "name": "kiddie pools", "singular": "kiddie pool", "ml": 100000 },
+        { "name": "fishbowls", "singular": "fishbowl", "ml": 5000 },
+        { "name": "batches of Jell-O", "singular": "batch of Jell-O", "ml": 2000 },
+        { "name": "hot tub fills", "singular": "hot tub fill", "ml": 150000 },
+        { "name": "beer kegs", "singular": "beer keg", "ml": 58670 },
+        { "name": "wine bottles", "singular": "wine bottle", "ml": 750 },
+        { "name": "fire hydrant blasts", "singular": "fire hydrant blast", "ml": 200000 },
+        { "name": "snow globe refills", "singular": "snow globe refill", "ml": 4000 },
+        { "name": "penguin enclosure cleanings", "singular": "penguin enclosure cleaning", "ml": 50000 }
+      ]
     },
     "nutrition": {
       "serving": "4,033 conversations",

@@ -1,6 +1,8 @@
-"""Strategy for estimating printed page count (CVS receipt comparison)."""
+"""Strategy for estimating printed page count (CVS receipt comparison).
 
-import random
+Outputs raw values - comparison selection and formatting is done client-side in charts.js
+"""
+
 from typing import Any
 
 from .base import Strategy
@@ -14,6 +16,19 @@ class PageCountStrategy(Strategy):
     output_key = "static.perspective"
 
     LINES_PER_PAGE = 50
+
+    # CVS receipt comparisons (feet, name)
+    CVS_COMPARISONS = [
+        {"name": "Golden Gate Bridges", "feet": 8981},
+        {"name": "Eiffel Towers", "feet": 1063},
+        {"name": "Empire State Buildings", "feet": 1454},
+        {"name": "blue whales", "feet": 100},
+        {"name": "Washington Monuments", "feet": 555},
+        {"name": "St. Louis Archs", "feet": 630},
+        {"name": "Burj Khalifas", "feet": 2717},
+        {"name": "Statue of Liberty (with pedestal)", "feet": 360},
+        {"name": "distance to the Moon", "feet": 1261154880},
+    ]
 
     def run(self) -> dict[str, Any]:
         total_lines = 0
@@ -38,41 +53,10 @@ class PageCountStrategy(Strategy):
                         total_lines += part.count("\n") + 1
 
         # CVS receipt: ~40 lines per foot
-        receipt_length_feet = total_lines / 40
+        receipt_length_feet = int(total_lines / 40)
 
-        # Get comparison
-        cvs_note = self._get_receipt_comparison(receipt_length_feet)
-
+        # Output raw value + comparisons for client-side rendering
         return {
-            "cvsReceipt": f"{receipt_length_feet:,.0f}",
-            "cvsNote": cvs_note,
+            "cvsReceiptFeet": receipt_length_feet,
+            "cvsComparisons": self.CVS_COMPARISONS,
         }
-
-    def _get_receipt_comparison(self, feet: float) -> str:
-        """Return a fun comparison for CVS receipt length (randomly selected each run)."""
-        # (reference length in feet, name, emoji/description)
-        comparisons = [
-            (8981, "Golden Gate Bridges"),
-            (1063, "Eiffel Towers"),
-            (1454, "Empire State Buildings"),
-            (100, "blue whales"),
-            (555, "Washington Monuments"),
-            (630, "St. Louis Archs"),
-            (2717, "Burj Khalifas"),
-            (360, "Statue of Liberty (with pedestal)"),
-            (1261154880, "distance to the Moon"),
-        ]
-
-        ref_feet, name = random.choice(comparisons)
-        ratio = feet / ref_feet
-
-        if ratio < 0.1:
-            return "A modest CVS run"
-        elif ratio < 1:
-            return f"{ratio:.1f}× {name}"
-        elif ratio < 2:
-            return f"{ratio:.1f}× {name}"
-        elif ratio < 10:
-            return f"{ratio:.0f}× {name}"
-        else:
-            return f"{ratio:.0f}× {name}"

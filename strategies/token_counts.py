@@ -1,6 +1,8 @@
-"""Strategy for counting tokens using tiktoken."""
+"""Strategy for counting tokens using tiktoken.
 
-import random
+Outputs raw values - comparison selection and formatting is done client-side in charts.js
+"""
+
 from typing import Any
 
 import tiktoken
@@ -15,29 +17,49 @@ class TokenCountsStrategy(Strategy):
     description = "Count total tokens using tiktoken"
     output_key = "static.perspective"
 
-    # Energy: ~18 Wh per 1K tokens (GPT-5 scale models, 2025)
-    # Source: University of Rhode Island AI Lab (2025), via Tom's Hardware
-    #         "medium-length 1,000-token GPT-5 response averages 18.35 Wh"
-    WH_PER_TOKEN = 0.018
-
-    # Water: 1.8 L per kWh (industry average WUE)
-    # Sources: EESI "Data Centers and Water Consumption" (eesi.org)
-    #          Dgtl Infra "Data Center Water Usage" (dgtlinfra.com)
-    #          Sunbird DCIM "What Is Water Usage Effectiveness" (sunbirddcim.com)
-    L_WATER_PER_KWH = 1.8
-
     # Famous long books for comparison (name, word count)
     # Sources: brokebybooks.com, wordsrated.com, wordcounttool.com
     FAMOUS_BOOKS = [
-        ("War & Peace", 587_000),
-        ("Harry Potter (all 7)", 1_084_000),
-        ("A Song of Ice & Fire (5 books)", 1_770_000),
-        ("Lord of the Rings trilogy", 455_000),
-        ("Les Misérables", 560_000),
-        ("Don Quixote", 350_000),
-        ("Stephen King's IT", 444_000),
-        ("Atlas Shrugged", 645_000),
-        ("Infinite Jest", 544_000),
+        {"name": "War & Peace", "words": 587_000},
+        {"name": "Harry Potter septology", "words": 1_084_000},
+        {"name": "Game of Thrones pentology", "words": 1_770_000},
+        {"name": "Lord of the Rings trilogy", "words": 455_000},
+        {"name": "Les Misérables", "words": 560_000},
+        {"name": "Stephen King's IT", "words": 444_000},
+        {"name": "Atlas Shrugged", "words": 645_000},
+        {"name": "Infinite Jest", "words": 544_000},
+    ]
+
+    # Energy comparisons (kwh reference, plural, singular)
+    # Energy: ~18 Wh per 1K tokens (GPT-5 scale models, 2025)
+    # Source: University of Rhode Island AI Lab (2025), via Tom's Hardware
+    ENERGY_COMPARISONS = [
+        {"name": "inflatable waving tube man hours", "singular": "inflatable waving tube man hour", "kwh": 0.15},
+        {"name": "Christmas light display nights", "singular": "Christmas light display night", "kwh": 3.0},
+        {"name": "hours of disco ball spinning", "singular": "hour of disco ball spinning", "kwh": 0.05},
+        {"name": "lava lamp meditation sessions", "singular": "lava lamp meditation session", "kwh": 0.12},
+        {"name": "DeLorean time travels", "singular": "DeLorean time travel", "kwh": 30000},
+        {"name": "lightning bolts", "singular": "lightning bolt", "kwh": 1400},
+        {"name": "toaster strudel preparations", "singular": "toaster strudel preparation", "kwh": 0.5},
+        {"name": "moments of existential dread", "singular": "moment of existential dread", "kwh": 0.02},
+        {"name": "ISS orbits", "singular": "ISS orbit", "kwh": 2500},
+        {"name": "robot vacuum sessions", "singular": "robot vacuum session", "kwh": 0.3},
+    ]
+
+    # Water comparisons (ml reference, plural, singular)
+    # Water: 1.8 L per kWh (industry average WUE)
+    # Sources: EESI, Dgtl Infra, Sunbird DCIM
+    WATER_COMPARISONS = [
+        {"name": "golden retriever baths", "singular": "golden retriever bath", "ml": 40000},
+        {"name": "kiddie pools", "singular": "kiddie pool", "ml": 100000},
+        {"name": "fishbowls", "singular": "fishbowl", "ml": 5000},
+        {"name": "batches of Jell-O", "singular": "batch of Jell-O", "ml": 2000},
+        {"name": "hot tub fills", "singular": "hot tub fill", "ml": 150000},
+        {"name": "beer kegs", "singular": "beer keg", "ml": 58670},
+        {"name": "wine bottles", "singular": "wine bottle", "ml": 750},
+        {"name": "fire hydrant blasts", "singular": "fire hydrant blast", "ml": 200000},
+        {"name": "snow globe refills", "singular": "snow globe refill", "ml": 4000},
+        {"name": "penguin enclosure cleanings", "singular": "penguin enclosure cleaning", "ml": 50000},
     ]
 
     def run(self) -> dict[str, Any]:
@@ -74,100 +96,11 @@ class TokenCountsStrategy(Strategy):
                 total_tokens += tokens
                 total_words += len(text.split())
 
-        # Calculate energy and water consumption
-        total_wh = total_tokens * self.WH_PER_TOKEN
-        total_kwh = total_wh / 1000
-        total_water_l = total_kwh * self.L_WATER_PER_KWH
-        total_water_ml = total_water_l * 1000  # for fun comparisons
-
-        # Book pages (assuming ~250 words per page)
-        book_pages = total_words / 250
-
-        # Get fun comparisons
-        energy_fun = self._get_energy_comparison(total_wh)
-        water_fun = self._get_water_comparison(total_water_ml)
-
-        # Get book comparison (randomly selected)
-        book_name, book_ratio, book_words = self._get_book_comparison(total_words)
-
-        # Format for data.json
+        # Output raw values + comparison data for client-side rendering
         return {
-            "totalWords": self._format_millions(total_words),
-            "bookPages": f"{book_pages:,.0f}",
-            "bookName": book_name,
-            "bookRatio": f"{book_ratio:.2f}x",
-            "bookWords": f"~{book_words:,} words each",
-            "tokens": self._format_millions(total_tokens),
-            "energy": f"{total_kwh:.2f}",  # kWh
-            "energyFun": energy_fun,
-            "water": f"{total_water_l:.2f}",  # liters
-            "waterFun": water_fun,
+            "totalWords": total_words,
+            "totalTokens": total_tokens,
+            "books": self.FAMOUS_BOOKS,
+            "energyComparisons": self.ENERGY_COMPARISONS,
+            "waterComparisons": self.WATER_COMPARISONS,
         }
-
-    def _format_millions(self, n: int) -> str:
-        """Format large numbers with M suffix."""
-        if n >= 1_000_000:
-            return f"{n / 1_000_000:.2f}M"
-        elif n >= 1_000:
-            return f"{n / 1_000:.1f}K"
-        return str(n)
-
-    def _get_book_comparison(self, total_words: int) -> tuple[str, float, int]:
-        """Get a random famous book comparison."""
-        book_name, book_words = random.choice(self.FAMOUS_BOOKS)
-        ratio = total_words / book_words
-        return book_name, ratio, book_words
-
-    def _get_energy_comparison(self, wh: float) -> str:
-        """Get a fun energy comparison (randomly selected each run)."""
-        # (kWh reference, plural form, singular form)
-        comparisons = [
-            (0.15, "inflatable waving tube man hours", "inflatable waving tube man hour"),
-            (3.0, "Christmas light display nights", "Christmas light display night"),
-            (0.05, "hours of disco ball spinning", "hour of disco ball spinning"),
-            (0.12, "lava lamp meditation sessions", "lava lamp meditation session"),
-            (30000, "DeLorean time travels", "DeLorean time travel"),
-            (1400, "lightning bolts", "lightning bolt"),
-            (0.5, "toaster strudel preparations", "toaster strudel preparation"),
-            (0.02, "moments of existential dread (server cost)", "moment of existential dread (server cost)"),
-            (2500, "International Space Station orbits", "International Space Station orbit"),
-            (0.3, "robot vacuum cleaning sessions", "robot vacuum cleaning session"),
-        ]
-
-        ref_kwh, plural, singular = random.choice(comparisons)
-        ref_wh = ref_kwh * 1000
-        ratio = wh / ref_wh
-
-        if ratio < 1:
-            return f"{ratio:.1f} {singular}"
-        elif ratio < 2:
-            return f"{ratio:.1f} {plural}"
-        else:
-            return f"{ratio:.0f} {plural}"
-
-    def _get_water_comparison(self, ml: float) -> str:
-        """Get a fun water comparison (randomly selected each run)."""
-        # (ml reference, plural form, singular form)
-        comparisons = [
-            (40000, "golden retriever baths", "golden retriever bath"),
-            (100000, "kiddie pools", "kiddie pool"),
-            (5000, "fishbowls", "fishbowl"),
-            (2000, "batches of Jell-O", "batch of Jell-O"),
-            (150000, "hot tub fills", "hot tub fill"),
-            (3785000000, "Olympic swimming pools", "Olympic swimming pool"),
-            (946000, "beer kegs", "beer keg"),
-            (750, "wine bottles", "wine bottle"),
-            (200000, "fire hydrant blasts (1 second)", "fire hydrant blast (1 second)"),
-            (4000, "snow globe refills", "snow globe refill"),
-            (50000, "penguin enclosure cleanings", "penguin enclosure cleaning"),
-        ]
-
-        ref_ml, plural, singular = random.choice(comparisons)
-        ratio = ml / ref_ml
-
-        if ratio < 1:
-            return f"{ratio:.1f} {singular}"
-        elif ratio < 2:
-            return f"{ratio:.1f} {plural}"
-        else:
-            return f"{ratio:.0f} {plural}"

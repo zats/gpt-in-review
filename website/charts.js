@@ -84,45 +84,72 @@
       }
     }
 
-    // Perspective section
+    // Perspective section - with random comparisons on each load
+    const p = data.perspective;
+    const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+    const formatNum = n => n >= 1_000_000 ? `${(n / 1_000_000).toFixed(2)}M` : n >= 1_000 ? `${(n / 1_000).toFixed(1)}K` : String(n);
+    // Energy/water ratio formatting (matches Python logic)
+    const formatRatio = (ratio, plural, singular) => {
+      if (ratio < 1) return `${ratio.toFixed(1)} ${singular}`;
+      if (ratio < 2) return `${ratio.toFixed(1)} ${plural}`;
+      return `${Math.round(ratio)} ${plural}`;
+    };
+    // CVS ratio formatting (matches Python logic)
+    const formatCvsRatio = (ratio, name) => {
+      if (ratio < 0.1) return 'A modest CVS run';
+      if (ratio < 2) return `${ratio.toFixed(1)}× ${name}`;
+      return `${Math.round(ratio)}× ${name}`;
+    };
+
+    // Total words
     const totalWords = document.getElementById('total-words-val');
-    if (totalWords) totalWords.textContent = data.perspective.totalWords;
+    if (totalWords) totalWords.textContent = formatNum(p.totalWords);
 
-    const bookPages = document.getElementById('book-pages');
-    if (bookPages) bookPages.innerHTML = `${data.perspective.bookPages}<span class="big-label">pages</span>`;
+    // Book pages (~250 words per page)
+    const bookPages = Math.round(p.totalWords / 250);
+    const bookPagesEl = document.getElementById('book-pages');
+    if (bookPagesEl) bookPagesEl.innerHTML = `${bookPages.toLocaleString()}<span class="big-label">pages</span>`;
 
-    // Book comparison (dynamic book name)
+    // Book comparison (random)
+    const book = pick(p.books);
+    const bookRatioVal = p.totalWords / book.words;
     const bookLabel = document.getElementById('book-label');
     const bookRatio = document.getElementById('book-ratio');
     const bookNote = document.getElementById('book-note');
-    if (bookLabel && data.perspective.bookName) {
-      bookLabel.textContent = `If printed as ${data.perspective.bookName}`;
-    }
-    if (bookRatio) bookRatio.textContent = data.perspective.bookRatio || data.perspective.warPeace;
-    if (bookNote && data.perspective.bookWords) {
-      bookNote.textContent = data.perspective.bookWords;
-    }
+    if (bookLabel) bookLabel.textContent = `If printed as ${book.name}`;
+    if (bookRatio) bookRatio.textContent = `${bookRatioVal.toFixed(2)}x`;
+    if (bookNote) bookNote.textContent = `~${book.words.toLocaleString()} words each`;
 
+    // CVS receipt comparison (random)
+    const cvsComp = pick(p.cvsComparisons);
+    const cvsRatio = p.cvsReceiptFeet / cvsComp.feet;
     const cvsReceipt = document.getElementById('cvs-receipt');
-    if (cvsReceipt) cvsReceipt.innerHTML = `${data.perspective.cvsReceipt}<span class="big-label">m</span>`;
-
+    if (cvsReceipt) cvsReceipt.innerHTML = `${p.cvsReceiptFeet.toLocaleString()}<span class="big-label">ft</span>`;
     const cvsNote = document.getElementById('cvs-note');
-    if (cvsNote) cvsNote.textContent = data.perspective.cvsNote;
+    if (cvsNote) cvsNote.textContent = formatCvsRatio(cvsRatio, cvsComp.name);
 
+    // Tokens
     const totalTokens = document.getElementById('total-tokens-val');
-    if (totalTokens) totalTokens.textContent = data.perspective.tokens;
+    if (totalTokens) totalTokens.textContent = formatNum(p.totalTokens);
 
+    // Energy: ~18 Wh per 1K tokens
+    const energyKwh = (p.totalTokens * 0.018) / 1000;
+    const energyComp = pick(p.energyComparisons);
+    const energyRatio = energyKwh / energyComp.kwh;
     const energyVal = document.getElementById('energy-val');
-    if (energyVal) energyVal.innerHTML = `${data.perspective.energy}<span class="big-label">kWh</span>`;
-
+    if (energyVal) energyVal.innerHTML = `${energyKwh.toFixed(2)}<span class="big-label">kWh</span>`;
     const energyFun = document.getElementById('energy-fun');
-    if (energyFun) energyFun.textContent = data.perspective.energyFun;
+    if (energyFun) energyFun.textContent = formatRatio(energyRatio, energyComp.name, energyComp.singular) || energyComp.singular;
 
+    // Water: ~1.8 L per kWh
+    const waterL = energyKwh * 1.8;
+    const waterMl = waterL * 1000;
+    const waterComp = pick(p.waterComparisons);
+    const waterRatio = waterMl / waterComp.ml;
     const waterVal = document.getElementById('water-val');
-    if (waterVal) waterVal.innerHTML = `${data.perspective.water}<span class="big-label">liters</span>`;
-
+    if (waterVal) waterVal.innerHTML = `${waterL.toFixed(2)}<span class="big-label">liters</span>`;
     const waterFun = document.getElementById('water-fun');
-    if (waterFun) waterFun.textContent = data.perspective.waterFun;
+    if (waterFun) waterFun.textContent = formatRatio(waterRatio, waterComp.name, waterComp.singular) || waterComp.singular;
 
 
     // Nutrition label
