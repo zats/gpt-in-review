@@ -56,9 +56,10 @@ class NutritionLabelStrategy(Strategy):
     ]
 
     AS_AN_AI_PATTERNS = [
-        r"\bas an? ai\b", r"\bas a language model\b", r"\bas an assistant\b",
-        r"\bi('m| am) (just )?(an? )?(ai|assistant|language model)\b",
+        r"\bas an? ai\b", r"\bas a(n?)( \w+)* language model\b", r"\bas an assistant\b",
+        r"\bi('m| am) (just )?(an? )?(\w+ )*(ai|assistant|language model)\b",
         r"\bmy training (data|cutoff)\b", r"\bmy knowledge (cutoff|is limited)\b",
+        r"\bi cannot (browse|access|search)\b", r"\bi don't have (access|the ability)\b",
     ]
 
     HALLUCINATION_RISK_PATTERNS = [
@@ -134,9 +135,14 @@ class NutritionLabelStrategy(Strategy):
                         if regex.search(text):
                             assistant_category_chars[category] += text_len
 
-        # Calculate percentages
-        def pct(chars: int, total: int) -> int:
-            return int((chars / total * 100) if total > 0 else 0)
+        # Calculate percentages - one decimal for <10%, integer for >=10%
+        def pct(chars: int, total: int) -> str:
+            if total <= 0:
+                return "0"
+            value = chars / total * 100
+            if value >= 10:
+                return str(int(value))
+            return f"{value:.1f}"
 
         sycophancy_pct = pct(assistant_category_chars.get("sycophancy", 0), assistant_chars_total)
         hallucination_pct = pct(assistant_category_chars.get("hallucination_risk", 0), assistant_chars_total)
