@@ -222,14 +222,22 @@
     }
   }
 
-  // Capture a card as a rounded PNG canvas
+  // Capture a card as a rounded PNG canvas with padding, background, and watermark
   async function captureCard(card) {
     const computedStyle = getComputedStyle(card);
     const borderRadius = parseInt(computedStyle.borderRadius) || 64;
+    const scale = 2;
+    const paddingV = 64 * scale;
+    const paddingH = 64 * scale;
+    const watermarkHeight = 24 * scale;
+    const watermarkPadding = 16 * scale;
+
+    // Get page background color from CSS variable
+    const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#ffffff';
 
     const canvas = await html2canvas(card, {
       backgroundColor: null,
-      scale: 2,
+      scale: scale,
       useCORS: true,
       logging: false,
       onclone: (clonedDoc, clonedEl) => {
@@ -238,27 +246,48 @@
       }
     });
 
+    // Create canvas with rounded card
     const roundedCanvas = document.createElement('canvas');
     roundedCanvas.width = canvas.width;
     roundedCanvas.height = canvas.height;
-    const ctx = roundedCanvas.getContext('2d');
-    const scaledRadius = borderRadius * 2;
+    const roundedCtx = roundedCanvas.getContext('2d');
+    const scaledRadius = borderRadius * scale;
 
-    ctx.beginPath();
-    ctx.moveTo(scaledRadius, 0);
-    ctx.lineTo(canvas.width - scaledRadius, 0);
-    ctx.quadraticCurveTo(canvas.width, 0, canvas.width, scaledRadius);
-    ctx.lineTo(canvas.width, canvas.height - scaledRadius);
-    ctx.quadraticCurveTo(canvas.width, canvas.height, canvas.width - scaledRadius, canvas.height);
-    ctx.lineTo(scaledRadius, canvas.height);
-    ctx.quadraticCurveTo(0, canvas.height, 0, canvas.height - scaledRadius);
-    ctx.lineTo(0, scaledRadius);
-    ctx.quadraticCurveTo(0, 0, scaledRadius, 0);
-    ctx.closePath();
-    ctx.clip();
-    ctx.drawImage(canvas, 0, 0);
+    roundedCtx.beginPath();
+    roundedCtx.moveTo(scaledRadius, 0);
+    roundedCtx.lineTo(canvas.width - scaledRadius, 0);
+    roundedCtx.quadraticCurveTo(canvas.width, 0, canvas.width, scaledRadius);
+    roundedCtx.lineTo(canvas.width, canvas.height - scaledRadius);
+    roundedCtx.quadraticCurveTo(canvas.width, canvas.height, canvas.width - scaledRadius, canvas.height);
+    roundedCtx.lineTo(scaledRadius, canvas.height);
+    roundedCtx.quadraticCurveTo(0, canvas.height, 0, canvas.height - scaledRadius);
+    roundedCtx.lineTo(0, scaledRadius);
+    roundedCtx.quadraticCurveTo(0, 0, scaledRadius, 0);
+    roundedCtx.closePath();
+    roundedCtx.clip();
+    roundedCtx.drawImage(canvas, 0, 0);
 
-    return roundedCanvas;
+    // Create final canvas with padding, background, and watermark
+    const finalCanvas = document.createElement('canvas');
+    finalCanvas.width = canvas.width + paddingH * 2;
+    finalCanvas.height = canvas.height + paddingV * 2 + watermarkHeight + watermarkPadding;
+    const ctx = finalCanvas.getContext('2d');
+
+    // Fill background
+    ctx.fillStyle = bgColor;
+    ctx.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
+
+    // Draw rounded card
+    ctx.drawImage(roundedCanvas, paddingH, paddingV);
+
+    // Draw watermark
+    ctx.fillStyle = bgColor === '#ffffff' ? 'rgba(0, 0, 0, 0.25)' : 'rgba(255, 255, 255, 0.25)';
+    ctx.font = `${14 * scale}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('gptinreview.com', finalCanvas.width / 2, finalCanvas.height - watermarkPadding);
+
+    return finalCanvas;
   }
 
   // Get filename from card
