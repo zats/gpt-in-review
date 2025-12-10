@@ -122,21 +122,16 @@ class TokenCountsStrategy(Strategy):
         """Get a fun energy comparison (randomly selected each run)."""
         # (kWh reference, plural form, singular form)
         comparisons = [
-            (0.2, "hours of karaoke machine", "hour of karaoke machine"),
-            (1.0, "hot tub hours", "hot tub hour"),
-            (0.8, "popcorn machine movie nights", "popcorn machine movie night"),
             (0.15, "inflatable waving tube man hours", "inflatable waving tube man hour"),
             (3.0, "Christmas light display nights", "Christmas light display night"),
             (0.05, "hours of disco ball spinning", "hour of disco ball spinning"),
-            (0.5, "hours of electric blanket coziness", "hour of electric blanket coziness"),
             (0.12, "lava lamp meditation sessions", "lava lamp meditation session"),
-            (0.03, "phone charges", "phone charge"),
-            (1.5, "hours of space heater warmth", "hour of space heater warmth"),
-            (0.06, "hours of fairy lights twinkling", "hour of fairy lights twinkling"),
-            (0.4, "loads of laundry", "load of laundry"),
-            (0.25, "hours of gaming console", "hour of gaming console"),
-            (2.0, "hours of air conditioning", "hour of air conditioning"),
-            (0.08, "hours of desk fan breeze", "hour of desk fan breeze"),
+            (30000, "DeLorean time travels", "DeLorean time travel"),
+            (1400, "lightning bolts", "lightning bolt"),
+            (0.5, "toaster strudel preparations", "toaster strudel preparation"),
+            (0.02, "moments of existential dread (server cost)", "moment of existential dread (server cost)"),
+            (2500, "International Space Station orbits", "International Space Station orbit"),
+            (0.3, "robot vacuum cleaning sessions", "robot vacuum cleaning session"),
         ]
 
         ref_kwh, plural, singular = random.choice(comparisons)
@@ -155,20 +150,16 @@ class TokenCountsStrategy(Strategy):
         # (ml reference, plural form, singular form)
         comparisons = [
             (40000, "golden retriever baths", "golden retriever bath"),
-            (60000, "guilt-free showers", "guilt-free shower"),
             (100000, "kiddie pools", "kiddie pool"),
             (5000, "fishbowls", "fishbowl"),
             (2000, "batches of Jell-O", "batch of Jell-O"),
-            (250, "glasses of water", "glass of water"),
-            (500, "water bottles", "water bottle"),
-            (15000, "bubble baths", "bubble bath"),
-            (1000, "ice cube trays", "ice cube tray"),
-            (350, "cups of coffee (water portion)", "cup of coffee (water portion)"),
-            (20000, "loads of dishes", "load of dishes"),
-            (3000, "aquarium top-offs", "aquarium top-off"),
-            (8000, "toilet flushes", "toilet flush"),
             (150000, "hot tub fills", "hot tub fill"),
-            (30000, "car washes", "car wash"),
+            (3785000000, "Olympic swimming pools", "Olympic swimming pool"),
+            (946000, "beer kegs", "beer keg"),
+            (750, "wine bottles", "wine bottle"),
+            (200000, "fire hydrant blasts (1 second)", "fire hydrant blast (1 second)"),
+            (4000, "snow globe refills", "snow globe refill"),
+            (50000, "penguin enclosure cleanings", "penguin enclosure cleaning"),
         ]
 
         ref_ml, plural, singular = random.choice(comparisons)

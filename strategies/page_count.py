@@ -52,21 +52,15 @@ class PageCountStrategy(Strategy):
         """Return a fun comparison for CVS receipt length (randomly selected each run)."""
         # (reference length in feet, name, emoji/description)
         comparisons = [
-            (8981, "Golden Gate Bridge"),
-            (1063, "Eiffel Tower (height)"),
-            (1454, "Empire State Building (height)"),
-            (5280, "mile"),
-            (300, "football field"),
-            (100, "blue whale"),
-            (555, "Washington Monument"),
-            (630, "St. Louis Arch"),
-            (2717, "Burj Khalifa (height)"),
-            (60, "bowling lane"),
-            (90, "basketball court"),
+            (8981, "Golden Gate Bridges"),
+            (1063, "Eiffel Towers"),
+            (1454, "Empire State Buildings"),
+            (100, "blue whales"),
+            (555, "Washington Monuments"),
+            (630, "St. Louis Archs"),
+            (2717, "Burj Khalifas"),
             (360, "Statue of Liberty (with pedestal)"),
-            (1250, "average city block"),
-            (27, "school bus"),
-            (50, "semi truck"),
+            (1261154880, "distance to the Moon"),
         ]
 
         ref_feet, name = random.choice(comparisons)
