@@ -1,6 +1,8 @@
 # GPT in Review
 
-Generates `data.json` and `tarot_card.png` for the GPT-in-Review website from your ChatGPT export.
+![Preview](preview.gif)
+
+Generates `data.json` and `tarot_card.png` for the GPT in Review website from your OpenAI data export.
 
 ## Prerequisites
 
