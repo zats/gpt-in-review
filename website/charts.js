@@ -1187,7 +1187,9 @@
   // ═══════════════════════════════════════════════════════════════════════════
   // Emoji Word Cloud (Combined)
   // ═══════════════════════════════════════════════════════════════════════════
-  function renderEmojiClouds(data) {
+  function renderEmojiClouds(data, retryCount = 0) {
+    const MAX_RETRIES = 10;
+
     // Update label with combined counts
     const emojiLabel = document.getElementById('emoji-label');
     if (emojiLabel) {
@@ -1223,9 +1225,11 @@
       rect = card.getBoundingClientRect();
     }
 
-    // If still no dimensions, retry after a short delay
-    if (rect.width === 0 || rect.height === 0) {
-      setTimeout(() => renderEmojiClouds(data), 50);
+    // Retry if dimensions are 0 or suspiciously small (flex not resolved yet)
+    // The card has min-height: 200px but flex: 1 should make it much taller
+    const needsRetry = rect.width === 0 || rect.height === 0 || rect.height < 250;
+    if (needsRetry && retryCount < MAX_RETRIES) {
+      setTimeout(() => renderEmojiClouds(data, retryCount + 1), 16);
       return;
     }
 
