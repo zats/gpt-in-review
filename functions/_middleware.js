@@ -63,11 +63,13 @@ export async function onRequest(context) {
   // Inject OG tags
   const modifiedHtml = injectOgTags(html, url, ogImage);
 
+  const commitSha = context.env.CF_PAGES_COMMIT_SHA || 'unknown';
   return new Response(modifiedHtml, {
     headers: {
       'content-type': 'text/html;charset=UTF-8',
       'cache-control': 'public, max-age=31536000, immutable',
-      'etag': `"${context.env.CF_PAGES_COMMIT_SHA || Date.now()}"`,
+      'etag': `"${commitSha}"`,
+      'x-deploy-sha': commitSha,
     },
   });
 }
