@@ -431,7 +431,34 @@ body {
 .card-frustration { grid-column: span 8; }
 .card-wordcloud { grid-column: span 4; }
 
-/* Section 6: Tarot, Emojis & Nutrition */
+/* Section: The Vibes - Nutrition/Emoji/Tarot layout */
+.vibes-top-stack {
+  grid-column: span 12;
+  display: flex;
+  gap: 1rem;
+}
+
+.vibes-left-stack {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.vibes-left-stack .card-nutrition {
+  flex: none;
+}
+
+.vibes-left-stack .card-emojis {
+  flex: 1;
+  min-height: 200px;
+}
+
+.vibes-top-stack > .card-tarot {
+  flex: 1;
+}
+
+/* Legacy Section 6: Tarot, Emojis & Nutrition */
 .card-tarot { grid-column: span 6; }
 
 .emoji-nutrition-stack {
@@ -1503,6 +1530,35 @@ body {
 
   .tarot-image {
     max-height: 80vh;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     Vibes Top Stack - separate pages on mobile
+     ═══════════════════════════════════════════════════════════════════════ */
+
+  .vibes-top-stack {
+    display: contents;
+  }
+
+  .vibes-left-stack {
+    display: contents;
+  }
+
+  .vibes-left-stack .card,
+  .vibes-top-stack .card-tarot {
+    flex: 0 0 100vw;
+    width: 100vw;
+    height: 100%;
+    overflow-y: auto;
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+    border-radius: 0;
+    border: none;
+    border-right: 1px solid var(--border);
+    justify-content: center;
+    padding: 1.5rem 1.25rem;
+    box-sizing: border-box;
+    background: var(--bg-card);
   }
 
   /* ═══════════════════════════════════════════════════════════════════════

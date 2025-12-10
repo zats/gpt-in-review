@@ -37,12 +37,89 @@
     </section>
 
     <!-- ═══════════════════════════════════════════════════════════════════
+         Section: The Vibes (Tarot, Emojis, Nutrition, Frustration)
+         ═══════════════════════════════════════════════════════════════════ -->
+    <div class="section-header">
+      <h2 class="section-title">The Vibes</h2>
+    </div>
+
+    <div class="vibes-top-stack">
+      <div class="vibes-left-stack">
+        <section id="nutrition-card" class="card card-nutrition">
+          <div class="nutrition-label" id="nutrition-label">
+            <h2 class="nutrition-title">Nutrition Facts</h2>
+            <p class="nutrition-serving" id="nutrition-serving"><span class="shimmer shimmer-text"></span></p>
+            <div class="nutrition-divider thick"></div>
+            <p class="nutrition-dv">% Daily Value*</p>
+            <div class="nutrition-divider"></div>
+            <div id="nutrition-rows">
+              <div class="shimmer shimmer-nutrition-row"></div>
+              <div class="shimmer shimmer-nutrition-row"></div>
+              <div class="shimmer shimmer-nutrition-row"></div>
+              <div class="shimmer shimmer-nutrition-row"></div>
+              <div class="shimmer shimmer-nutrition-row"></div>
+              <div class="shimmer shimmer-nutrition-row"></div>
+              <div class="shimmer shimmer-nutrition-row"></div>
+              <div class="shimmer shimmer-nutrition-row"></div>
+            </div>
+            <div class="nutrition-divider"></div>
+            <div class="nutrition-row highlight">
+              <span class="nutrition-name">Clear Ask Ratio</span>
+              <span class="nutrition-val" id="clear-ask-ratio"><span class="shimmer shimmer-text-sm"></span></span>
+            </div>
+            <div class="nutrition-divider thick"></div>
+            <p class="nutrition-footnote">* % Daily Value based on your entire ChatGPT history.</p>
+            <p class="nutrition-footnote">† You weren't always right. It just wanted you to feel that way.</p>
+            <p class="nutrition-footnote">‡ OpenAI thanks you for your generous data donation.</p>
+            <p class="nutrition-footnote">§ 90% of that context was ignored after the first 4K tokens.</p>
+          </div>
+        </section>
+
+        <section id="top-emojis" class="card card-emojis">
+          <div class="card-header">
+            <h2 class="card-label">Most used emojis</h2>
+            <span class="chart-peak"><span id="emoji-user-label"></span> <span id="emoji-assistant-label"></span></span>
+          </div>
+          <div class="emoji-cloud-wrapper">
+            <canvas id="emoji-cloud"></canvas>
+          </div>
+        </section>
+      </div>
+
+      <section id="tarot-card" class="card card-tarot">
+        <h2 class="card-label">Your Tarot</h2>
+        <div id="tarot-container"><div class="shimmer shimmer-tarot"></div></div>
+      </section>
+    </div>
+
+    <div id="vibes" class="frustration-stack">
+      <section id="frustration-vs-apologies" class="card card-frustration">
+        <div class="card-header">
+          <h2 class="card-label">Frustration vs Apologies</h2>
+        </div>
+        <div id="frustration-chart" class="chart-shimmer"><div class="shimmer shimmer-chart shimmer-chart-tall"></div></div>
+        <div class="frustration-legend">
+          <span class="legend-item"><span class="legend-color frustration-color"></span>your frustration</span>
+          <span class="legend-item"><span class="legend-color apology-color"></span>ai apologizing</span>
+        </div>
+      </section>
+
+      <section id="frustration-wordcloud" class="card card-wordcloud">
+        <h2 class="card-label">Frustration Word Cloud</h2>
+        <canvas id="frustration-cloud"></canvas>
+      </section>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
          Section 0: It all started... + Section 1: Basics
          ═══════════════════════════════════════════════════════════════════ -->
+    <div class="section-header">
+      <h2 class="section-title">It all started...</h2>
+    </div>
+
     <div id="intro" class="intro-stack">
       <section id="first-chat" class="card card-first">
-        <h2 class="card-label">It all started...</h2>
-        <p class="first-date" id="first-date"><span class="shimmer shimmer-text-lg"></span></p>
+        <span class="card-label" id="first-date"><span class="shimmer shimmer-text-lg"></span></span>
         <div class="chat" id="first-chat-messages">
           <div class="shimmer shimmer-msg shimmer-msg-user"></div>
           <div class="shimmer shimmer-msg shimmer-msg-assistant"></div>
@@ -240,81 +317,6 @@
         <div id="streamgraph-chart" class="chart-shimmer"><div class="shimmer shimmer-chart shimmer-chart-tall"></div></div>
         <div id="streamgraph-legend"></div>
       </section>
-    </div>
-
-    <!-- ═══════════════════════════════════════════════════════════════════
-         Section 5: You and ChatGPT
-         ═══════════════════════════════════════════════════════════════════ -->
-    <div class="section-header">
-      <h2 class="section-title">The Vibes</h2>
-    </div>
-
-    <div id="vibes" class="frustration-stack">
-      <section id="frustration-vs-apologies" class="card card-frustration">
-        <div class="card-header">
-          <h2 class="card-label">Frustration vs Apologies</h2>
-        </div>
-        <div id="frustration-chart" class="chart-shimmer"><div class="shimmer shimmer-chart shimmer-chart-tall"></div></div>
-        <div class="frustration-legend">
-          <span class="legend-item"><span class="legend-color frustration-color"></span>your frustration</span>
-          <span class="legend-item"><span class="legend-color apology-color"></span>ai apologizing</span>
-        </div>
-      </section>
-
-      <section id="frustration-wordcloud" class="card card-wordcloud">
-        <h2 class="card-label">Frustration Word Cloud</h2>
-        <canvas id="frustration-cloud"></canvas>
-      </section>
-    </div>
-
-    <!-- ═══════════════════════════════════════════════════════════════════
-         Section 6: Tarot, Emojis & Nutrition Label
-         ═══════════════════════════════════════════════════════════════════ -->
-    <section id="tarot-card" class="card card-tarot">
-      <h2 class="card-label">Your Tarot</h2>
-      <div id="tarot-container"><div class="shimmer shimmer-tarot"></div></div>
-    </section>
-
-    <div class="emoji-nutrition-stack">
-      <section id="top-emojis" class="card card-emojis">
-        <div class="card-header">
-          <h2 class="card-label">Emojis</h2>
-          <span class="chart-peak"><span id="emoji-user-label"></span> <span id="emoji-assistant-label"></span></span>
-        </div>
-        <div class="emoji-cloud-wrapper">
-          <canvas id="emoji-cloud"></canvas>
-        </div>
-      </section>
-
-      <section id="nutrition-card" class="card card-nutrition">
-      <div class="nutrition-label" id="nutrition-label">
-        <h2 class="nutrition-title">Nutrition Facts</h2>
-        <p class="nutrition-serving" id="nutrition-serving"><span class="shimmer shimmer-text"></span></p>
-        <div class="nutrition-divider thick"></div>
-        <p class="nutrition-dv">% Daily Value*</p>
-        <div class="nutrition-divider"></div>
-        <div id="nutrition-rows">
-          <div class="shimmer shimmer-nutrition-row"></div>
-          <div class="shimmer shimmer-nutrition-row"></div>
-          <div class="shimmer shimmer-nutrition-row"></div>
-          <div class="shimmer shimmer-nutrition-row"></div>
-          <div class="shimmer shimmer-nutrition-row"></div>
-          <div class="shimmer shimmer-nutrition-row"></div>
-          <div class="shimmer shimmer-nutrition-row"></div>
-          <div class="shimmer shimmer-nutrition-row"></div>
-        </div>
-        <div class="nutrition-divider"></div>
-        <div class="nutrition-row highlight">
-          <span class="nutrition-name">Clear Ask Ratio</span>
-          <span class="nutrition-val" id="clear-ask-ratio"><span class="shimmer shimmer-text-sm"></span></span>
-        </div>
-        <div class="nutrition-divider thick"></div>
-        <p class="nutrition-footnote">* % Daily Value based on your entire ChatGPT history.</p>
-        <p class="nutrition-footnote">† You weren't always right. It just wanted you to feel that way.</p>
-        <p class="nutrition-footnote">‡ OpenAI thanks you for your generous data donation.</p>
-        <p class="nutrition-footnote">§ 90% of that context was ignored after the first 4K tokens.</p>
-      </div>
-    </section>
     </div>
 
   </main>
