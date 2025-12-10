@@ -1783,6 +1783,7 @@ body {
 
   .apikey-code {
     font-size: 3rem;
+    flex: none;
   }
 
   .copy-btn {
