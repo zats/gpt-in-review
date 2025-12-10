@@ -222,6 +222,10 @@ body {
   opacity: 1;
 }
 
+.card-tarot:hover {
+  border-top-right-radius: 0;
+}
+
 .share-btn:hover svg {
   stroke: var(--text);
 }
@@ -945,10 +949,6 @@ body {
   position: relative;
 }
 
-/* Hide share button on tarot (full-bleed image card) */
-.card-tarot .share-btn {
-  display: none;
-}
 
 #tarot-container {
   flex: 1;
