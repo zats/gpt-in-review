@@ -1019,8 +1019,8 @@ body {
   background: transparent;
   border: none;
   padding: 0;
-  word-break: break-all;
-  flex: 1;
+  white-space: nowrap;
+  overflow-x: auto;
   color: var(--text-secondary);
 }
 
@@ -1784,6 +1784,9 @@ body {
   .apikey-code {
     font-size: 3rem;
     flex: none;
+    white-space: normal;
+    word-break: break-all;
+    overflow-x: visible;
   }
 
   .copy-btn {
