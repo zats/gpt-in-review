@@ -1,7 +1,6 @@
 """Strategy for counting tokens using tiktoken."""
 
-import json
-from pathlib import Path
+import random
 from typing import Any
 
 import tiktoken
@@ -9,324 +8,175 @@ import tiktoken
 from .base import Strategy
 
 
-def format_smart_number(n: float) -> str:
-    """
-    Format a number smartly:
-    - If n >= 1: show integer + 1 decimal, but if decimal < 0.5, just show integer
-    - If n < 1: show first non-zero digit after decimal
-    - Never show trailing zeros that don't add information
-    """
-    if n <= 0:
-        return "0"
-
-    if n >= 1:
-        integer_part = int(n)
-        if integer_part > 10:  # Above 10, drop fraction altogether
-            return str(integer_part)
-        return f"{n:.1f}".rstrip('0').rstrip('.')
-    else:
-        # n < 1, find first non-zero digit
-        # Count how many zeros after decimal point
-        if n >= 0.1:
-            return f"{n:.1f}".rstrip('0').rstrip('.')
-        elif n >= 0.01:
-            return f"{n:.2f}".rstrip('0').rstrip('.')
-        elif n >= 0.001:
-            return f"{n:.3f}".rstrip('0').rstrip('.')
-        elif n >= 0.0001:
-            return f"{n:.4f}".rstrip('0').rstrip('.')
-        elif n >= 0.00001:
-            return f"{n:.5f}".rstrip('0').rstrip('.')
-        else:
-            return f"{n:.6f}".rstrip('0').rstrip('.')
-
-
 class TokenCountsStrategy(Strategy):
     """Count total tokens across all conversations."""
 
     name = "token_counts"
     description = "Count total tokens using tiktoken"
+    output_key = "static.perspective"
 
-    # Energy consumption estimates (2024-2025 research)
-    # Based on Epoch AI and OpenAI data: ~0.3 Wh per 500 output tokens for GPT-4o
-    # Source: https://epoch.ai/gradient-updates/how-much-energy-does-chatgpt-use
-    # Using 0.0006 Wh per token as middle estimate
-    WH_PER_TOKEN = 0.0006  # Watt-hours per token
+    # Energy: ~18 Wh per 1K tokens (GPT-5 scale models, 2025)
+    # Source: University of Rhode Island AI Lab (2025), via Tom's Hardware
+    #         "medium-length 1,000-token GPT-5 response averages 18.35 Wh"
+    WH_PER_TOKEN = 0.018
 
-    # Water consumption estimates (2024-2025 research)
-    # Based on UC Riverside research: ~21.5 mL per 300-token response (including electricity generation)
-    # Source: https://arxiv.org/pdf/2304.03271
-    # Using 0.07 mL per token (total water footprint including cooling + electricity generation)
-    ML_WATER_PER_TOKEN = 0.07  # milliliters per token
+    # Water: 1.8 L per kWh (industry average WUE)
+    # Sources: EESI "Data Centers and Water Consumption" (eesi.org)
+    #          Dgtl Infra "Data Center Water Usage" (dgtlinfra.com)
+    #          Sunbird DCIM "What Is Water Usage Effectiveness" (sunbirddcim.com)
+    L_WATER_PER_KWH = 1.8
+
+    # Famous long books for comparison (name, word count)
+    # Sources: brokebybooks.com, wordsrated.com, wordcounttool.com
+    FAMOUS_BOOKS = [
+        ("War & Peace", 587_000),
+        ("Harry Potter (all 7)", 1_084_000),
+        ("A Song of Ice & Fire (5 books)", 1_770_000),
+        ("Lord of the Rings trilogy", 455_000),
+        ("Les Misérables", 560_000),
+        ("Don Quixote", 350_000),
+        ("Stephen King's IT", 444_000),
+        ("Atlas Shrugged", 645_000),
+        ("Infinite Jest", 544_000),
+    ]
 
     def run(self) -> dict[str, Any]:
         # Use cl100k_base encoding (GPT-4, GPT-3.5-turbo)
         encoding = tiktoken.get_encoding("cl100k_base")
 
-        files = self.get_conversation_files()
-
         total_tokens = 0
-        user_tokens = 0
-        assistant_tokens = 0
-        conversations_processed = 0
+        total_words = 0
 
-        for file_path in files:
-            try:
-                with open(file_path, "r", encoding="utf-8") as f:
-                    data = json.load(f)
+        for data in self.conversations:
+            mapping = data.get("mapping", {})
+            for node in mapping.values():
+                message = node.get("message")
+                if message is None:
+                    continue
 
-                conversations_processed += 1
+                # Skip hidden system messages
+                metadata = message.get("metadata", {})
+                if metadata.get("is_visually_hidden_from_conversation"):
+                    continue
 
-                mapping = data.get("mapping", {})
-                for node in mapping.values():
-                    message = node.get("message")
-                    if message is None:
-                        continue
+                content = message.get("content", {})
+                parts = content.get("parts", [])
 
-                    # Skip hidden system messages
-                    metadata = message.get("metadata", {})
-                    if metadata.get("is_visually_hidden_from_conversation"):
-                        continue
+                text = ""
+                for part in parts:
+                    if isinstance(part, str):
+                        text += part
 
-                    content = message.get("content", {})
-                    parts = content.get("parts", [])
+                if not text:
+                    continue
 
-                    text = ""
-                    for part in parts:
-                        if isinstance(part, str):
-                            text += part
-
-                    if not text:
-                        continue
-
-                    tokens = len(encoding.encode(text))
-                    total_tokens += tokens
-
-                    author = message.get("author", {})
-                    role = author.get("role", "")
-
-                    if role == "user":
-                        user_tokens += tokens
-                    elif role == "assistant":
-                        assistant_tokens += tokens
-
-            except Exception as e:
-                print(f"Error processing {file_path.name}: {e}")
+                tokens = len(encoding.encode(text))
+                total_tokens += tokens
+                total_words += len(text.split())
 
         # Calculate energy and water consumption
         total_wh = total_tokens * self.WH_PER_TOKEN
         total_kwh = total_wh / 1000
-        total_water_ml = total_tokens * self.ML_WATER_PER_TOKEN
-        total_water_liters = total_water_ml / 1000
+        total_water_l = total_kwh * self.L_WATER_PER_KWH
+        total_water_ml = total_water_l * 1000  # for fun comparisons
 
-        results = {
-            "total_tokens": total_tokens,
-            "user_tokens": user_tokens,
-            "assistant_tokens": assistant_tokens,
-            "conversations_processed": conversations_processed,
-            "avg_tokens_per_conversation": (
-                total_tokens / conversations_processed
-                if conversations_processed > 0
-                else 0
-            ),
-            "total_kwh": total_kwh,
-            "total_water_liters": total_water_liters,
+        # Book pages (assuming ~250 words per page)
+        book_pages = total_words / 250
+
+        # Get fun comparisons
+        energy_fun = self._get_energy_comparison(total_wh)
+        water_fun = self._get_water_comparison(total_water_ml)
+
+        # Get book comparison (randomly selected)
+        book_name, book_ratio, book_words = self._get_book_comparison(total_words)
+
+        # Format for data.json
+        return {
+            "totalWords": self._format_millions(total_words),
+            "bookPages": f"{book_pages:,.0f}",
+            "bookName": book_name,
+            "bookRatio": f"{book_ratio:.2f}x",
+            "bookWords": f"~{book_words:,} words each",
+            "tokens": self._format_millions(total_tokens),
+            "energy": f"{total_kwh:.2f}",  # kWh
+            "energyFun": energy_fun,
+            "water": f"{total_water_l:.2f}",  # liters
+            "waterFun": water_fun,
         }
 
-        # Estimate costs (rough GPT-4 pricing: $0.03/1K input, $0.06/1K output)
-        estimated_input_cost = (user_tokens / 1000) * 0.03
-        estimated_output_cost = (assistant_tokens / 1000) * 0.06
-        estimated_total_cost = estimated_input_cost + estimated_output_cost
+    def _format_millions(self, n: int) -> str:
+        """Format large numbers with M suffix."""
+        if n >= 1_000_000:
+            return f"{n / 1_000_000:.2f}M"
+        elif n >= 1_000:
+            return f"{n / 1_000:.1f}K"
+        return str(n)
 
-        # Build electricity comparisons
-        electricity_comparisons = self._get_electricity_comparisons(total_kwh)
-        water_comparisons = self._get_water_comparisons(total_water_liters)
+    def _get_book_comparison(self, total_words: int) -> tuple[str, float, int]:
+        """Get a random famous book comparison."""
+        book_name, book_words = random.choice(self.FAMOUS_BOOKS)
+        ratio = total_words / book_words
+        return book_name, ratio, book_words
 
-        output = f"""# Token Counts
-
-## Summary
-
-| Metric | Count |
-|--------|-------|
-| Total Tokens | {results['total_tokens']:,} |
-| User Tokens | {results['user_tokens']:,} |
-| Assistant Tokens | {results['assistant_tokens']:,} |
-| Avg Tokens/Conversation | {results['avg_tokens_per_conversation']:,.0f} |
-
-## Estimated Costs (GPT-4 pricing)
-
-| Category | Estimated Cost |
-|----------|----------------|
-| Input (user) | ${estimated_input_cost:,.2f} |
-| Output (assistant) | ${estimated_output_cost:,.2f} |
-| **Total** | **${estimated_total_cost:,.2f}** |
-
-*Note: Based on GPT-4 pricing ($0.03/1K input, $0.06/1K output)*
-
----
-
-## Environmental Impact
-
-### Electricity Consumption
-
-**Estimated total:** {total_kwh:,.2f} kWh ({total_wh:,.0f} Wh)
-
-Based on ~0.3 Wh per 500 tokens (GPT-4o level inference), per [Epoch AI research](https://epoch.ai/gradient-updates/how-much-energy-does-chatgpt-use) and [OpenAI's 2024 disclosure](https://openai.com).
-
-#### How much is {total_kwh:,.2f} kWh? Here's some context:
-
-{electricity_comparisons}
-
-### Water Consumption
-
-**Estimated total:** {total_water_liters:,.1f} liters ({total_water_ml:,.0f} mL)
-
-Based on ~21.5 mL per 300-token response (including data center cooling + water used in electricity generation), per [UC Riverside research](https://arxiv.org/pdf/2304.03271).
-
-#### How much is {total_water_liters:,.1f} liters? Here's some context:
-
-{water_comparisons}
-
----
-
-### Methodology Notes
-
-- **Electricity estimate:** Uses 0.0006 Wh/token based on Epoch AI's 2025 analysis of GPT-4o inference on H100 hardware. This includes GPU compute but may underestimate total data center overhead (cooling, networking, storage). Actual consumption could be 2-3x higher.
-
-- **Water estimate:** Uses 0.07 mL/token based on UC Riverside's 2023-2024 research. This includes both direct cooling water (Scope 1) and water used in electricity generation (Scope 2). Does not include manufacturing water (Scope 3).
-
-- **Important caveat:** These are rough estimates. Actual consumption varies significantly based on model size, hardware generation, data center efficiency (PUE), geographic location, and cooling technology. Early estimates (e.g., the commonly cited "3 Wh per query") have been revised down ~10x as hardware and software improved.
-"""
-        self.write_output(output)
-
-        return results
-
-    def _get_electricity_comparisons(self, kwh: float) -> str:
-        """Generate bizarre and entertaining electricity comparisons."""
-        import random
-
-        comparisons = []
-
-        # Buckets from tiny to massive, each with 5 bizarre comparisons
-        # Format: (kwh_value, description_template) - use {n} as placeholder
-        buckets = [
-            # Tiny (0.001 - 0.05 kWh)
-            [
-                (0.005, "powering a Tamagotchi for {n} days"),
-                (0.01, "charging {n} electric toothbrushes"),
-                (0.008, "running a lava lamp for {n} hours"),
-                (0.003, "powering {n} singing birthday cards"),
-                (0.015, "keeping a nightlight on for {n} nights"),
-            ],
-            # Small (0.05 - 0.5 kWh)
-            [
-                (0.1, "powering {n} hours of an inflatable wacky waving arm flailing tube man"),
-                (0.2, "running a karaoke machine for {n} drunken hours"),
-                (0.15, "operating a cotton candy machine for {n} carnival hours"),
-                (0.08, "charging {n} Nintendo Switch sessions"),
-                (0.25, "powering a margarita blender for {n} frozen cocktails"),
-            ],
-            # Medium (0.5 - 5 kWh)
-            [
-                (1.0, "running a hot tub for {n} romantic hours"),
-                (2.0, "powering a home tanning bed for {n} sessions of questionable life choices"),
-                (0.8, "operating a popcorn machine for {n} movie nights"),
-                (1.5, "running a fog machine for {n} hours of spooky atmosphere"),
-                (3.0, "powering a full Christmas light display for {n} festive nights"),
-            ],
-            # Large (5 - 50 kWh)
-            [
-                (10, "charging {n} electric scooters from 'borrowed' to full"),
-                (25, "powering a roadside 'OPEN' neon sign for {n} days"),
-                (15, "running a soft-serve ice cream machine for {n} hours of brain freeze"),
-                (30, "operating a car wash for {n} sparkly vehicles"),
-                (20, "powering a bouncy castle for {n} birthday parties"),
-            ],
-            # Huge (50+ kWh)
-            [
-                (100, "powering a small roller coaster for {n} thrilling hours"),
-                (500, "running a movie theater's projector for {n} feature films"),
-                (1000, "keeping a walk-in freezer cold for {n} days of ice cream preservation"),
-                (10500, "powering an average US home for {n} years"),
-                (50000, "running a billboard in Times Square for {n} attention-seeking days"),
-            ],
+    def _get_energy_comparison(self, wh: float) -> str:
+        """Get a fun energy comparison (randomly selected each run)."""
+        # (kWh reference, plural form, singular form)
+        comparisons = [
+            (0.2, "hours of karaoke machine", "hour of karaoke machine"),
+            (1.0, "hot tub hours", "hot tub hour"),
+            (0.8, "popcorn machine movie nights", "popcorn machine movie night"),
+            (0.15, "inflatable waving tube man hours", "inflatable waving tube man hour"),
+            (3.0, "Christmas light display nights", "Christmas light display night"),
+            (0.05, "hours of disco ball spinning", "hour of disco ball spinning"),
+            (0.5, "hours of electric blanket coziness", "hour of electric blanket coziness"),
+            (0.12, "lava lamp meditation sessions", "lava lamp meditation session"),
+            (0.03, "phone charges", "phone charge"),
+            (1.5, "hours of space heater warmth", "hour of space heater warmth"),
+            (0.06, "hours of fairy lights twinkling", "hour of fairy lights twinkling"),
+            (0.4, "loads of laundry", "load of laundry"),
+            (0.25, "hours of gaming console", "hour of gaming console"),
+            (2.0, "hours of air conditioning", "hour of air conditioning"),
+            (0.08, "hours of desk fan breeze", "hour of desk fan breeze"),
         ]
 
-        comparisons.append("| Your Usage Equals |")
-        comparisons.append("|-------------------|")
+        ref_kwh, plural, singular = random.choice(comparisons)
+        ref_wh = ref_kwh * 1000
+        ratio = wh / ref_wh
 
-        for bucket in buckets:
-            # Pick one random comparison from each bucket
-            ref_kwh, template = random.choice(bucket)
-            ratio = kwh / ref_kwh
-            if ratio >= 0.001:  # Only show if meaningful
-                formatted_num = format_smart_number(ratio)
-                description = template.format(n=formatted_num)
-                comparisons.append(f"| {description} |")
+        if ratio < 1:
+            return f"{ratio:.1f} {singular}"
+        elif ratio < 2:
+            return f"{ratio:.1f} {plural}"
+        else:
+            return f"{ratio:.0f} {plural}"
 
-        return "\n".join(comparisons)
-
-    def _get_water_comparisons(self, liters: float) -> str:
-        """Generate bizarre and entertaining water comparisons."""
-        import random
-
-        comparisons = []
-
-        # Buckets from tiny to massive, each with 5 bizarre comparisons
-        # Format: (liters_value, description_template) - use {n} as placeholder
-        buckets = [
-            # Tiny (0.01 - 1 liter)
-            [
-                (0.25, "filling {n} shot glasses for a very hydrated party"),
-                (0.5, "making {n} cups of instant ramen (the college student unit)"),
-                (0.35, "filling {n} hamster water bottles"),
-                (0.1, "producing {n} tears while watching sad movies"),
-                (0.75, "brewing {n} cups of pour-over coffee for insufferable hipsters"),
-            ],
-            # Small (1 - 20 liters)
-            [
-                (5, "filling {n} fishbowls for your new emotional support goldfish"),
-                (2, "making {n} batches of Jell-O (the jiggly unit)"),
-                (10, "filling {n} Super Soakers for backyard warfare"),
-                (3, "watering {n} sad office plants back to life"),
-                (8, "making {n} buckets of water balloons for ultimate betrayal"),
-            ],
-            # Medium (20 - 200 liters)
-            [
-                (60, "taking {n} showers (the guilt-free length, not the concert prep)"),
-                (40, "giving {n} baths to a very dirty golden retriever"),
-                (100, "filling {n} kiddie pools for tiny humans"),
-                (150, "making {n} bathtubs worth of bubble bath"),
-                (80, "running {n} loads through a pressure washer for that satisfying clean"),
-            ],
-            # Large (200 - 2000 liters)
-            [
-                (500, "filling {n} hot tubs for awkward networking events"),
-                (1000, "supplying {n} days of water for a small elephant"),
-                (750, "making {n} massive slip-n-slides"),
-                (300, "filling {n} restaurant-grade ice machines"),
-                (400, "producing {n} failed attempts at a backyard ice rink"),
-            ],
-            # Huge (2000+ liters)
-            [
-                (5000, "filling {n} above-ground pools for suburban flex"),
-                (10000, "keeping {n} dolphins hydrated for a day"),
-                (50000, "flooding {n} movie sets for an action sequence"),
-                (100000, "filling {n} Olympic diving pools"),
-                (73000, "supplying an average US household for {n} years"),
-            ],
+    def _get_water_comparison(self, ml: float) -> str:
+        """Get a fun water comparison (randomly selected each run)."""
+        # (ml reference, plural form, singular form)
+        comparisons = [
+            (40000, "golden retriever baths", "golden retriever bath"),
+            (60000, "guilt-free showers", "guilt-free shower"),
+            (100000, "kiddie pools", "kiddie pool"),
+            (5000, "fishbowls", "fishbowl"),
+            (2000, "batches of Jell-O", "batch of Jell-O"),
+            (250, "glasses of water", "glass of water"),
+            (500, "water bottles", "water bottle"),
+            (15000, "bubble baths", "bubble bath"),
+            (1000, "ice cube trays", "ice cube tray"),
+            (350, "cups of coffee (water portion)", "cup of coffee (water portion)"),
+            (20000, "loads of dishes", "load of dishes"),
+            (3000, "aquarium top-offs", "aquarium top-off"),
+            (8000, "toilet flushes", "toilet flush"),
+            (150000, "hot tub fills", "hot tub fill"),
+            (30000, "car washes", "car wash"),
         ]
 
-        comparisons.append("| Your Usage Equals |")
-        comparisons.append("|-------------------|")
+        ref_ml, plural, singular = random.choice(comparisons)
+        ratio = ml / ref_ml
 
-        for bucket in buckets:
-            # Pick one random comparison from each bucket
-            ref_liters, template = random.choice(bucket)
-            ratio = liters / ref_liters
-            if ratio >= 0.001:  # Only show if meaningful
-                formatted_num = format_smart_number(ratio)
-                description = template.format(n=formatted_num)
-                comparisons.append(f"| {description} |")
-
-        return "\n".join(comparisons)
+        if ratio < 1:
+            return f"{ratio:.1f} {singular}"
+        elif ratio < 2:
+            return f"{ratio:.1f} {plural}"
+        else:
+            return f"{ratio:.0f} {plural}"

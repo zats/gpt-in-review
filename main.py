@@ -1,38 +1,98 @@
 #!/usr/bin/env python3
 """
-Main driver for running conversation analysis strategies in parallel.
+Main driver for running conversation analysis and generating website data.
 
 Usage:
-    python main.py                     # Run all strategies with default parallelism (4)
-    python main.py --parallel 8        # Run with 8 parallel workers
-    python main.py --list              # List available strategies
-    python main.py --strategies basic_counts,token_counts  # Run specific strategies
+    python main.py /path/to/conversations.json
+
+Outputs:
+    website/data.json
+    website/tarot_card.png
 """
 
 import argparse
 import importlib
 import inspect
+import json
+import os
 import sys
-import threading
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from datetime import datetime
 from pathlib import Path
-from typing import Type
+from typing import Any, Type
 
-# Add the script directory to the path
-SCRIPT_DIR = Path(__file__).parent
-sys.path.insert(0, str(SCRIPT_DIR))
+# Fail fast on missing dependencies
+REQUIRED_PACKAGES = {
+    "tiktoken": "tiktoken",
+    "emoji": "emoji",
+    "openai": "openai",
+    "google.genai": "google-genai",
+    "sklearn": "scikit-learn",
+    "numpy": "numpy",
+    "dotenv": "python-dotenv",
+}
 
+
+def check_dependencies() -> None:
+    """Check all required packages are installed. Exit if any missing."""
+    missing = []
+    for module, package in REQUIRED_PACKAGES.items():
+        try:
+            importlib.import_module(module)
+        except ImportError:
+            missing.append(package)
+
+    if missing:
+        print("ERROR: Missing required packages:")
+        for pkg in missing:
+            print(f"  - {pkg}")
+        print(f"\nInstall with: pip install {' '.join(missing)}")
+        sys.exit(1)
+
+
+def load_env() -> None:
+    """Load .env file from script directory. Exit if missing or keys not set."""
+    from dotenv import load_dotenv
+
+    script_dir = Path(__file__).parent
+    env_path = script_dir / ".env"
+
+    if not env_path.exists():
+        print(f"ERROR: .env file not found at {env_path}")
+        print("Copy .env.example to .env and fill in your API keys")
+        sys.exit(1)
+
+    load_dotenv(env_path)
+
+    # Check required API keys
+    openai_key = os.environ.get("OPENAI_API_KEY")
+    google_key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
+
+    errors = []
+    if not openai_key or openai_key.startswith("sk-..."):
+        errors.append("OPENAI_API_KEY not set or still placeholder")
+    if not google_key or google_key == "...":
+        errors.append("GOOGLE_API_KEY (or GEMINI_API_KEY) not set or still placeholder")
+
+    if errors:
+        print("ERROR: API keys not properly configured in .env:")
+        for err in errors:
+            print(f"  - {err}")
+        sys.exit(1)
+
+
+# Check dependencies before any other imports
+check_dependencies()
+
+# Now safe to import after dependency check
 from strategies.base import Strategy
 
-# Paths
-CONVERSATIONS_DIR = (
-    SCRIPT_DIR.parent
-    / "derived"
-    / "conversations_split"
-)
-OUTPUT_BASE_DIR = SCRIPT_DIR / "output"
+
+SCRIPT_DIR = Path(__file__).parent
+WEBSITE_DIR = SCRIPT_DIR / "website"
+
+# Strategies to skip (not used in data.json)
+SKIP_STRATEGIES = {"topic_timeline", "abandoned_conversations"}
 
 
 def discover_strategies() -> dict[str, Type[Strategy]]:
@@ -45,181 +105,220 @@ def discover_strategies() -> dict[str, Type[Strategy]]:
             continue
 
         module_name = file_path.stem
+        if module_name in SKIP_STRATEGIES:
+            continue
+
         try:
             module = importlib.import_module(f"strategies.{module_name}")
             for name, obj in inspect.getmembers(module, inspect.isclass):
                 if issubclass(obj, Strategy) and obj is not Strategy:
                     strategies[obj.name] = obj
         except Exception as e:
-            print(f"Warning: Could not load {module_name}: {e}")
+            print(f"  [!] Failed to load {module_name}: {e}")
 
     return strategies
 
 
-def run_strategy(
-    strategy_class: Type[Strategy],
-    conversations_dir: Path,
-    output_dir: Path,
-    progress_callback: callable = None,
-) -> tuple[str, dict, float]:
-    """Run a single strategy and return results."""
-    start_time = time.time()
+def load_conversations(path: Path) -> list[dict]:
+    """Load conversations from JSON file."""
+    print(f"Loading {path}...")
+    start = time.time()
 
     try:
-        strategy = strategy_class(conversations_dir, output_dir)
-        results = strategy.run()
-        elapsed = time.time() - start_time
-        return strategy_class.name, results, elapsed
+        with open(path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except json.JSONDecodeError as e:
+        print(f"ERROR: Invalid JSON in {path}: {e}")
+        sys.exit(1)
     except Exception as e:
-        elapsed = time.time() - start_time
-        return strategy_class.name, {"error": str(e)}, elapsed
+        print(f"ERROR: Could not read {path}: {e}")
+        sys.exit(1)
+
+    if not isinstance(data, list):
+        print(f"ERROR: Expected JSON array, got {type(data).__name__}")
+        sys.exit(1)
+
+    elapsed = time.time() - start
+    print(f"Loaded {len(data):,} conversations ({elapsed:.1f}s)\n")
+    return data
 
 
-class ProgressTracker:
-    """Thread-safe progress tracking."""
+def run_strategy(
+    strategy_class: Type[Strategy],
+    conversations: list[dict],
+    output_dir: Path,
+) -> tuple[str, dict[str, Any], float, str | None]:
+    """Run a single strategy and return results."""
+    start_time = time.time()
+    error_msg = None
 
-    def __init__(self, total: int, strategy_names: list[str]):
-        self.total = total
-        self.completed = 0
-        self.running = set()
-        self.strategy_names = strategy_names
-        self.lock = threading.Lock()
+    try:
+        strategy = strategy_class(conversations, output_dir)
+        results = strategy.run()
+        if "error" in results:
+            error_msg = results["error"]
+    except Exception as e:
+        results = {"error": str(e)}
+        error_msg = str(e)
 
-    def start(self, name: str):
-        with self.lock:
-            self.running.add(name)
-            self._print_status()
+    elapsed = time.time() - start_time
+    return strategy_class.name, results, elapsed, error_msg
 
-    def finish(self, name: str):
-        with self.lock:
-            self.running.discard(name)
-            self.completed += 1
-            self._print_status()
 
-    def _print_status(self):
-        pct = (self.completed / self.total) * 100
-        running_str = ", ".join(sorted(self.running)) if self.running else "none"
-        # Clear line and print status
-        print(
-            f"\r[{self.completed}/{self.total}] {pct:.0f}% complete | Running: {running_str}",
-            end="",
-            flush=True,
-        )
+def merge_results(all_results: dict[str, dict]) -> dict[str, Any]:
+    """Merge all strategy results into the final data.json structure."""
+    data = {
+        "static": {
+            "firstConversation": {},
+            "overview": {},
+            "longestConversation": {},
+            "longestMessage": {},
+            "streak": {},
+            "perspective": {},
+            "nutrition": {},
+        },
+        "topics": [],
+        "charts": {},
+        "streamgraph": {},
+        "frustration": {},
+        "emojis": {},
+        "tarot": {},
+        "apiKey": "",
+    }
+
+    for strategy_name, result in all_results.items():
+        if "error" in result and strategy_name != "topics":
+            continue
+
+        if strategy_name == "basic_counts":
+            data["static"]["overview"] = result
+        elif strategy_name == "first_conversation":
+            data["static"]["firstConversation"] = result
+        elif strategy_name == "conversation_durations":
+            data["static"]["longestConversation"] = result
+        elif strategy_name == "response_lengths":
+            data["static"]["longestMessage"] = result
+        elif strategy_name == "streaks":
+            data["static"]["streak"] = result
+        elif strategy_name == "token_counts":
+            data["static"]["perspective"].update(result)
+        elif strategy_name == "page_count":
+            data["static"]["perspective"].update(result)
+        elif strategy_name == "nutrition_label":
+            data["static"]["nutrition"] = result
+        elif strategy_name == "message_timing":
+            data["charts"] = result
+        elif strategy_name == "topics":
+            # Merged strategy returns topics, tarot, and streamgraph
+            data["topics"] = result.get("topics", [])
+            data["tarot"] = result.get("tarot", {})
+            data["streamgraph"] = result.get("streamgraph", {})
+        elif strategy_name == "swear_apology":
+            data["frustration"] = result
+        elif strategy_name == "emoji_stats":
+            data["emojis"] = result
+        elif strategy_name == "api_key":
+            data["apiKey"] = result.get("key", "")
+
+    return data
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Run conversation analysis strategies in parallel"
+        description="Generate GPT-in-Review website data from conversations.json"
     )
     parser.add_argument(
-        "--parallel",
-        "-p",
-        type=int,
-        default=4,
-        help="Number of parallel workers (default: 4)",
-    )
-    parser.add_argument(
-        "--list",
-        "-l",
-        action="store_true",
-        help="List available strategies and exit",
-    )
-    parser.add_argument(
-        "--strategies",
-        "-s",
+        "conversations_file",
         type=str,
-        help="Comma-separated list of strategies to run (default: all)",
+        help="Path to conversations.json file",
     )
     args = parser.parse_args()
 
-    # Discover strategies
-    all_strategies = discover_strategies()
-
-    if args.list:
-        print("Available strategies:\n")
-        for name, cls in sorted(all_strategies.items()):
-            print(f"  {name:25} - {cls.description}")
-        return
-
-    # Select strategies to run
-    if args.strategies:
-        selected_names = [s.strip() for s in args.strategies.split(",")]
-        strategies_to_run = {}
-        for name in selected_names:
-            if name in all_strategies:
-                strategies_to_run[name] = all_strategies[name]
-            else:
-                print(f"Warning: Unknown strategy '{name}', skipping")
-        if not strategies_to_run:
-            print("Error: No valid strategies selected")
-            sys.exit(1)
-    else:
-        strategies_to_run = all_strategies
-
-    # Validate conversations directory
-    if not CONVERSATIONS_DIR.exists():
-        print(f"Error: Conversations directory not found: {CONVERSATIONS_DIR}")
+    # Validate input file
+    conversations_path = Path(args.conversations_file)
+    if not conversations_path.exists():
+        print(f"ERROR: File not found: {conversations_path}")
         sys.exit(1)
 
-    # Create output directory with timestamp
-    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    output_dir = OUTPUT_BASE_DIR / timestamp
-    output_dir.mkdir(parents=True, exist_ok=True)
+    # Load environment
+    load_env()
 
-    print(f"Conversation Analysis Runner")
-    print(f"=" * 50)
-    print(f"Conversations dir: {CONVERSATIONS_DIR}")
-    print(f"Output dir: {output_dir}")
-    print(f"Strategies: {len(strategies_to_run)}")
-    print(f"Parallel workers: {args.parallel}")
-    print(f"=" * 50)
-    print()
+    # Add script directory to path for imports
+    sys.path.insert(0, str(SCRIPT_DIR))
 
-    # Initialize progress tracker
-    tracker = ProgressTracker(len(strategies_to_run), list(strategies_to_run.keys()))
+    # Load conversations
+    conversations = load_conversations(conversations_path)
+
+    # Discover strategies
+    all_strategies = discover_strategies()
+    strategy_names = sorted(all_strategies.keys())
+    print(f"Running {len(strategy_names)} strategies in parallel...\n")
+
+    # Create output directory
+    output_dir = SCRIPT_DIR / "output"
+    output_dir.mkdir(exist_ok=True)
+
+    # Track status for each strategy
+    status = {name: "pending" for name in strategy_names}
+    results = {}
+    total_start = time.time()
+
+    def print_status():
+        """Print current status line."""
+        running = [n for n, s in status.items() if s == "running"]
+        done = sum(1 for s in status.values() if s in ("done", "error"))
+        total = len(status)
+        if running:
+            print(f"\r[{done}/{total}] Running: {', '.join(running)}", end="", flush=True)
 
     # Run strategies in parallel
-    results = {}
-    start_time = time.time()
-
-    with ThreadPoolExecutor(max_workers=args.parallel) as executor:
+    with ThreadPoolExecutor(max_workers=6) as executor:
         futures = {}
-        for name, strategy_class in strategies_to_run.items():
-            tracker.start(name)
-            future = executor.submit(
-                run_strategy, strategy_class, CONVERSATIONS_DIR, output_dir
-            )
+        for name in strategy_names:
+            strategy_class = all_strategies[name]
+            future = executor.submit(run_strategy, strategy_class, conversations, output_dir)
             futures[future] = name
+            status[name] = "running"
+
+        print_status()
 
         for future in as_completed(futures):
             name = futures[future]
-            try:
-                strategy_name, result, elapsed = future.result()
-                results[strategy_name] = {"result": result, "elapsed": elapsed}
-                tracker.finish(name)
-            except Exception as e:
-                results[name] = {"error": str(e), "elapsed": 0}
-                tracker.finish(name)
+            strategy_name, result, elapsed, error = future.result()
+            results[strategy_name] = result
 
-    print()  # New line after progress
-    print()
+            if error:
+                status[name] = "error"
+                print(f"\r[x] {name}: FAILED ({elapsed:.1f}s) - {error}")
+            else:
+                status[name] = "done"
+                print(f"\r[✓] {name} ({elapsed:.1f}s)" + " " * 40)
 
-    total_elapsed = time.time() - start_time
+            print_status()
 
-    # Print summary
-    print(f"Results Summary")
-    print(f"=" * 50)
-    for name, data in sorted(results.items()):
-        elapsed = data.get("elapsed", 0)
-        if "error" in data.get("result", {}):
-            status = f"ERROR: {data['result']['error']}"
-        else:
-            status = "OK"
-        print(f"  {name:25} [{elapsed:6.2f}s] {status}")
+    total_elapsed = time.time() - total_start
+    print(f"\r" + " " * 60)  # Clear status line
+    print(f"\nCompleted in {total_elapsed:.1f}s")
 
-    print(f"=" * 50)
-    print(f"Total time: {total_elapsed:.2f}s")
-    print(f"Output written to: {output_dir}")
+    # Count errors
+    errors = sum(1 for s in status.values() if s == "error")
+    if errors:
+        print(f"  {errors} strategy(ies) failed")
+
+    # Merge results
+    data = merge_results(results)
+
+    # Write data.json
+    WEBSITE_DIR.mkdir(exist_ok=True)
+    data_path = WEBSITE_DIR / "data.json"
+    with open(data_path, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2)
+    print(f"\nWrote {data_path}")
+
+    # Check tarot image
+    tarot_path = WEBSITE_DIR / "tarot_card.png"
+    if tarot_path.exists():
+        print(f"Wrote {tarot_path}")
 
 
 if __name__ == "__main__":

@@ -12,8 +12,19 @@ class Strategy(ABC):
     name: str = "base"
     description: str = "Base strategy"
 
-    def __init__(self, conversations_dir: Path, output_dir: Path):
-        self.conversations_dir = conversations_dir
+    # The key(s) this strategy contributes to in data.json
+    # Can be a single key like "topics" or a nested path like "static.overview"
+    output_key: str = ""
+
+    def __init__(self, conversations: list[dict], output_dir: Path):
+        """
+        Initialize the strategy with conversation data.
+
+        Args:
+            conversations: List of conversation dictionaries loaded from conversations.json
+            output_dir: Directory for any file outputs (e.g., images)
+        """
+        self.conversations = conversations
         self.output_dir = output_dir
 
     @abstractmethod
@@ -22,18 +33,7 @@ class Strategy(ABC):
         Run the analysis strategy.
 
         Returns:
-            A dict with results that will also be written to the output file.
+            A dict with the data to be merged into data.json.
+            The structure should match what's expected for this strategy's output_key.
         """
         pass
-
-    def get_conversation_files(self) -> list[Path]:
-        """Get all JSON conversation files."""
-        return sorted(self.conversations_dir.glob("*.json"))
-
-    def write_output(self, content: str, filename: str | None = None) -> Path:
-        """Write output to a file in the output directory."""
-        if filename is None:
-            filename = f"{self.name}.md"
-        output_path = self.output_dir / filename
-        output_path.write_text(content, encoding="utf-8")
-        return output_path

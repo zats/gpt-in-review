@@ -49,21 +49,21 @@
     const longestMsgTitle = document.getElementById('longest-msg-title');
     if (longestMsgTitle) longestMsgTitle.textContent = `"${data.longestMessage.title}"`;
 
-    // Streak (calculated from ISO dates)
+    // Streak - calculates duration from from/to dates (to defaults to today if not specified)
     const streakVal = document.getElementById('streak-val');
     const streakDates = document.getElementById('streak-dates');
     if (streakVal && streakDates && data.streak.from) {
       const fromDate = new Date(data.streak.from + 'T00:00:00');
+      // If "to" not specified, use today (current streak)
       const toDate = data.streak.to
         ? new Date(data.streak.to + 'T00:00:00')
         : new Date();
 
-      // Calculate days difference
-      const diffMs = toDate - fromDate;
-      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+      // Calculate days (inclusive of both start and end)
+      const days = Math.floor((toDate - fromDate) / (1000 * 60 * 60 * 24)) + 1;
 
       // Format the value
-      streakVal.textContent = `${diffDays} days`;
+      streakVal.textContent = `${days} days`;
 
       // Format dates for display
       const formatDate = (date) => {
@@ -71,17 +71,16 @@
       };
       const formatYear = (date) => date.getFullYear();
 
-      if (data.streak.to) {
-        // Completed streak: "Jun 11 → Dec 1, 2025"
-        const fromStr = formatDate(fromDate);
+      const fromStr = formatDate(fromDate);
+
+      if (!data.streak.to) {
+        // Current active streak (no "to" date)
+        streakDates.textContent = `${fromStr} → now`;
+      } else {
+        // Historical longest streak
         const toStr = formatDate(toDate);
         const year = formatYear(toDate);
         streakDates.textContent = `${fromStr} → ${toStr}, ${year}`;
-      } else {
-        // Ongoing streak: "Jun 11, 2025 → ongoing"
-        const fromStr = formatDate(fromDate);
-        const year = formatYear(fromDate);
-        streakDates.textContent = `${fromStr}, ${year} → ongoing`;
       }
     }
 
@@ -92,8 +91,17 @@
     const bookPages = document.getElementById('book-pages');
     if (bookPages) bookPages.innerHTML = `${data.perspective.bookPages}<span class="big-label">pages</span>`;
 
-    const warPeace = document.getElementById('war-peace');
-    if (warPeace) warPeace.textContent = data.perspective.warPeace;
+    // Book comparison (dynamic book name)
+    const bookLabel = document.getElementById('book-label');
+    const bookRatio = document.getElementById('book-ratio');
+    const bookNote = document.getElementById('book-note');
+    if (bookLabel && data.perspective.bookName) {
+      bookLabel.textContent = `If printed as ${data.perspective.bookName}`;
+    }
+    if (bookRatio) bookRatio.textContent = data.perspective.bookRatio || data.perspective.warPeace;
+    if (bookNote && data.perspective.bookWords) {
+      bookNote.textContent = data.perspective.bookWords;
+    }
 
     const cvsReceipt = document.getElementById('cvs-receipt');
     if (cvsReceipt) cvsReceipt.innerHTML = `${data.perspective.cvsReceipt}<span class="big-label">m</span>`;
@@ -115,6 +123,7 @@
 
     const waterFun = document.getElementById('water-fun');
     if (waterFun) waterFun.textContent = data.perspective.waterFun;
+
 
     // Nutrition label
     const nutritionServing = document.getElementById('nutrition-serving');
@@ -1099,7 +1108,7 @@
 
     WordCloud(container, {
       list: wordList.map(([word, size]) => [word, size * weightFactor]),
-      fontFamily: 'Inter, sans-serif',
+      fontFamily: 'sans-serif',
       classes: function(word, weight, fontSize, extraDataArray) {
         const cls = fontClasses[Math.floor(Math.random() * fontClasses.length)];
         return cls;
@@ -1111,8 +1120,8 @@
       rotationSteps: 2,  // Only 0° or 90°
       backgroundColor: 'transparent',
       drawOutOfBound: false,
-      shrinkToFit: false,
-      gridSize: 4,
+      shrinkToFit: true,
+      gridSize: 2,
       shuffle: true,
       minSize: 0,
       shape: 'square',
@@ -1151,10 +1160,23 @@
 
     // Get the wrapper dimensions (positioned absolutely in card)
     const wrapper = canvas.parentElement;
-    const rect = wrapper.getBoundingClientRect();
+    let rect = wrapper.getBoundingClientRect();
+
+    // If wrapper has no dimensions yet (initial load), use card dimensions
+    if (rect.width === 0 || rect.height === 0) {
+      const card = wrapper.parentElement;
+      rect = card.getBoundingClientRect();
+    }
+
+    // If still no dimensions, retry after a short delay
+    if (rect.width === 0 || rect.height === 0) {
+      setTimeout(() => renderEmojiClouds(data), 50);
+      return;
+    }
+
     const isMobileCheck = window.innerWidth <= 768;
 
-    // Use wrapper dimensions (which fills the card)
+    // Use wrapper/card dimensions
     const width = rect.width;
     const height = rect.height;
 
@@ -1238,6 +1260,12 @@
     renderFrustrationChart('#frustration-chart', appData.frustration);
     renderTarot('#tarot-container', appData.tarot);
 
+    // API Key (top-level, not in static)
+    const apiKeyVal = document.getElementById('apikey-val');
+    if (apiKeyVal && appData.apiKey) {
+      apiKeyVal.textContent = appData.apiKey;
+    }
+
     // Delay word cloud renders to ensure layout is complete
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
@@ -1245,11 +1273,12 @@
       });
     });
 
-    // Delay emoji cloud render to ensure layout is complete
+    // Delay emoji cloud render to ensure flexbox layout is complete
+    // Using setTimeout(0) after rAF ensures layout/paint has finished
     requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
+      setTimeout(() => {
         renderEmojiClouds(appData.emojis);
-      });
+      }, 0);
     });
   }
 

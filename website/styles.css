@@ -651,15 +651,7 @@ body {
 
 .emoji-cloud-wrapper canvas {
   display: block;
-  filter: saturate(0);
-  transition: filter 0.3s ease;
 }
-
-/* Hover states for emoji clouds */
-.card-emojis:hover .emoji-cloud-wrapper canvas {
-  filter: saturate(1);
-}
-
 
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -1000,12 +992,6 @@ body {
 #frustration-chart {
   flex: 1;
   min-height: 350px;
-  filter: saturate(0);
-  transition: filter 0.3s ease;
-}
-
-.card-frustration:hover #frustration-chart {
-  filter: saturate(1);
 }
 
 .frustration-legend {
@@ -1013,12 +999,6 @@ body {
   justify-content: center;
   gap: 1.5rem;
   margin-top: 0.75rem;
-  filter: saturate(0);
-  transition: filter 0.3s ease;
-}
-
-.card-frustration:hover .frustration-legend {
-  filter: saturate(1);
 }
 
 .frustration-color {
