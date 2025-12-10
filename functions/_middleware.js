@@ -9,7 +9,7 @@ const DEFAULT_OG_IMAGE = '/og-image.png';
 
 const SITE_URL = 'https://gptinreview.com';
 const SITE_TITLE = 'GPT in Review';
-const SITE_DESCRIPTION = 'Reliving best moments with ChatGPT';
+const SITE_DESCRIPTION = 'Reliving best memories with ChatGPT';
 
 function getOgImageForCard(cardId) {
   if (cardId && CARD_IMAGES[cardId]) {
