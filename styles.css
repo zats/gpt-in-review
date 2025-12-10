@@ -1545,7 +1545,7 @@ body {
   }
 
   .vibes-left-stack .card,
-  .vibes-top-stack .card-tarot {
+  .vibes-top-stack > .card-tarot {
     flex: 0 0 100vw;
     width: 100vw;
     height: 100%;

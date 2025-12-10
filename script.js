@@ -42,6 +42,23 @@
         return;
       }
 
+      // vibes-top-stack uses display:contents on mobile, expand its children recursively
+      if (el.classList.contains('vibes-top-stack')) {
+        Array.from(el.children).forEach(child => {
+          if (child.classList.contains('card')) {
+            cards.push(child);
+          } else if (child.classList.contains('vibes-left-stack')) {
+            // vibes-left-stack also uses display:contents, expand its cards
+            Array.from(child.children).forEach(grandchild => {
+              if (grandchild.classList.contains('card')) {
+                cards.push(grandchild);
+              }
+            });
+          }
+        });
+        return;
+      }
+
       // Include cards and stacks that stay combined
       if (el.classList.contains('card') ||
           el.classList.contains('intro-stack') ||
