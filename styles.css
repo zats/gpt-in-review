@@ -1012,7 +1012,10 @@ body {
 
 .apikey-code {
   font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
-  font-size: 0.85rem;
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
   background: transparent;
   border: none;
   padding: 0;
@@ -1774,10 +1777,12 @@ body {
 
   .card-apikey {
     justify-content: center;
+    align-items: center;
+    text-align: center;
   }
 
   .apikey-code {
-    font-size: 0.6rem;
+    font-size: 3rem;
   }
 
   .copy-btn {
@@ -1907,6 +1912,11 @@ body {
   /* Tarot */
   .tarot-image {
     max-height: 80vh;
+  }
+
+  /* API Key */
+  .apikey-code {
+    font-size: 2rem;
   }
 }
 
