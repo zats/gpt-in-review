@@ -46,20 +46,6 @@ GOOGLE_API_KEY=AIza-your-key-here
 python main.py /path/to/conversations.json
 ```
 
-## Output
-
-- `website/data.json` - All analytics data for the website
-- `website/tarot_card.png` - Generated tarot card image
-
-## Environment Variables
-
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `OPENAI_API_KEY` | Yes | For embeddings and topic labeling |
-| `GOOGLE_API_KEY` | Yes | For tarot card image generation |
-
-You can also use `GEMINI_API_KEY` instead of `GOOGLE_API_KEY`.
-
 ## Viewing Results
 
 After running the pipeline, view your dashboard:
