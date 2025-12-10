@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#fafafa" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#141414" media="(prefers-color-scheme: dark)">
+  <title>ChatGPT in Review</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/wordcloud@1.2.2/src/wordcloud2.min.js"></script>
+</head>
+<body>
+  <!-- Landscape blocker (mobile only) -->
+  <div class="landscape-blocker">
+    <div class="landscape-message">
+      <span class="rotate-icon">📱</span>
+      <p>Please rotate to portrait</p>
+    </div>
+  </div>
+
+  <header class="header">
+    <h1 class="logo">ChatGPT in Review</h1>
+  </header>
+
+  <main class="bento">
+
+    <!-- Title card (mobile only) -->
+    <section id="title" class="card card-title">
+      <h1 class="title-text">ChatGPT in Review</h1>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         Section 0: It all started... + Section 1: Basics
+         ═══════════════════════════════════════════════════════════════════ -->
+    <div id="intro" class="intro-stack">
+      <section id="first-chat" class="card card-first">
+        <h2 class="card-label">It all started...</h2>
+        <p class="first-date" id="first-date"><span class="shimmer shimmer-text-lg"></span></p>
+        <div class="chat" id="first-chat-messages">
+          <div class="shimmer shimmer-msg shimmer-msg-user"></div>
+          <div class="shimmer shimmer-msg shimmer-msg-assistant"></div>
+          <div class="shimmer shimmer-msg shimmer-msg-user"></div>
+          <div class="shimmer shimmer-msg shimmer-msg-assistant"></div>
+        </div>
+        <p class="first-duration" id="first-duration"><span class="shimmer shimmer-text"></span></p>
+      </section>
+
+      <section id="overview" class="card card-overview">
+        <div class="overview-hero">
+          <span class="overview-number" id="overview-total"><span class="shimmer shimmer-number"></span></span>
+          <span class="overview-label" id="overview-label"><span class="shimmer shimmer-text"></span></span>
+        </div>
+        <div class="overview-breakdown">
+          <div class="overview-stat">
+            <span class="overview-val" id="overview-user"><span class="shimmer shimmer-text-sm"></span></span>
+            <span class="overview-desc">from you</span>
+          </div>
+          <div class="overview-divider"></div>
+          <div class="overview-stat">
+            <span class="overview-val" id="overview-assistant"><span class="shimmer shimmer-text-sm"></span></span>
+            <span class="overview-desc">from ChatGPT</span>
+          </div>
+          <div class="overview-divider"></div>
+          <div class="overview-stat">
+            <span class="overview-val" id="overview-avg"><span class="shimmer shimmer-text-sm"></span></span>
+            <span class="overview-desc">avg per chat</span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div id="stats" class="stats-stack">
+      <section id="longest-convo" class="card card-longest-convo">
+        <h2 class="card-label">Longest Conversation</h2>
+        <span class="stat-value" id="longest-convo-val"><span class="shimmer shimmer-text-lg"></span></span>
+        <span class="stat-subtitle" id="longest-convo-title"><span class="shimmer shimmer-text"></span></span>
+      </section>
+
+      <section id="longest-msg" class="card card-longest-msg">
+        <h2 class="card-label">Longest Response</h2>
+        <span class="stat-value" id="longest-msg-val"><span class="shimmer shimmer-text-lg"></span></span>
+        <span class="stat-unit">characters</span>
+        <span class="stat-subtitle" id="longest-msg-title"><span class="shimmer shimmer-text"></span></span>
+      </section>
+
+      <section id="streak" class="card card-streak">
+        <h2 class="card-label">Longest Streak</h2>
+        <span class="stat-value" id="streak-val"><span class="shimmer shimmer-text-lg"></span></span>
+        <p class="stat-subtitle" id="streak-dates"><span class="shimmer shimmer-text"></span></p>
+      </section>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         Section 2: Messaging Charts
+         ═══════════════════════════════════════════════════════════════════ -->
+    <div class="section-header">
+      <h2 class="section-title">Messaging Patterns</h2>
+    </div>
+
+    <div id="charts-1" class="charts-stack-1">
+      <section id="hourly-messaging" class="card card-hourly">
+        <div class="card-header">
+          <h2 class="card-label">By Hour</h2>
+          <span class="chart-peak" id="hour-peak"></span>
+        </div>
+        <div id="hour-chart" class="chart-shimmer"><div class="shimmer shimmer-chart"></div></div>
+        <div class="chart-labels-h">
+          <span>12a</span>
+          <span>6a</span>
+          <span>12p</span>
+          <span>6p</span>
+          <span>12a</span>
+        </div>
+      </section>
+
+      <section id="daily-messaging" class="card card-daily">
+        <div class="card-header">
+          <h2 class="card-label">By Day</h2>
+          <span class="chart-peak" id="day-peak"></span>
+        </div>
+        <div id="day-chart" class="chart-shimmer"><div class="shimmer shimmer-chart"></div></div>
+        <div class="chart-labels-h day-labels-mobile">
+          <span>Sun</span>
+          <span>Mon</span>
+          <span>Tue</span>
+          <span>Wed</span>
+          <span>Thu</span>
+          <span>Fri</span>
+          <span>Sat</span>
+        </div>
+      </section>
+    </div>
+
+    <div id="charts-2" class="charts-stack-2">
+      <section id="monthly-messaging" class="card card-monthly">
+        <div class="card-header">
+          <h2 class="card-label">By Month</h2>
+          <span class="chart-peak" id="month-peak"></span>
+        </div>
+        <div id="month-chart" class="chart-shimmer"><div class="shimmer shimmer-chart"></div></div>
+        <div class="chart-labels-h" id="month-labels"></div>
+      </section>
+
+      <section id="messaging-timeline" class="card card-timeline">
+        <div class="card-header">
+          <h2 class="card-label">Over Time</h2>
+          <span class="chart-peak" id="timeline-peak"></span>
+        </div>
+        <div id="timeline-chart" class="chart-shimmer"><div class="shimmer shimmer-chart shimmer-chart-tall"></div></div>
+      </section>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         Section 3: Your Messages in Perspective
+         ═══════════════════════════════════════════════════════════════════ -->
+    <div class="section-header">
+      <h2 class="section-title">In Perspective</h2>
+    </div>
+
+    <div id="perspective-1" class="perspective-stack-1">
+      <section id="total-words" class="card card-words">
+        <h2 class="card-label">Total Words</h2>
+        <span class="stat-value" id="total-words-val"><span class="shimmer shimmer-number"></span></span>
+      </section>
+
+      <section id="total-pages" class="card card-pages">
+        <h2 class="card-label">Book Pages</h2>
+        <span class="stat-value" id="book-pages"><span class="shimmer shimmer-number"></span></span>
+        <p class="stat-note">~3,000 chars per page</p>
+      </section>
+
+      <section id="war-and-peaces" class="card card-warpeace">
+        <h2 class="card-label">If printed as War & Peace</h2>
+        <span class="stat-value" id="war-peace"><span class="shimmer shimmer-number"></span></span>
+        <p class="stat-note">~580,000 words each</p>
+      </section>
+
+      <section id="cvs-receipts" class="card card-receipt">
+        <h2 class="card-label">If printed as CVS Receipt</h2>
+        <span class="stat-value" id="cvs-receipt"><span class="shimmer shimmer-number"></span></span>
+        <p class="stat-note" id="cvs-note"><span class="shimmer shimmer-text"></span></p>
+      </section>
+    </div>
+
+    <div id="perspective-2" class="perspective-stack-2">
+      <section id="total-tokens" class="card card-tokens">
+        <h2 class="card-label">Tokens Processed</h2>
+        <span class="stat-value" id="total-tokens-val"><span class="shimmer shimmer-number"></span></span>
+        <p class="stat-note">Massively undercounting: we can't see thinking and tool call tokens</p>
+      </section>
+
+      <section id="energy-consumed" class="card card-energy">
+        <h2 class="card-label">Energy Required</h2>
+        <span class="stat-value" id="energy-val"><span class="shimmer shimmer-number"></span></span>
+        <p class="stat-subtitle" id="energy-fun"><span class="shimmer shimmer-text"></span></p>
+        <p class="stat-note">~0.6 Wh per 1K tokens · Epoch AI</p>
+      </section>
+
+      <section id="water-consumed" class="card card-water">
+        <h2 class="card-label">Water Required</h2>
+        <span class="stat-value" id="water-val"><span class="shimmer shimmer-number"></span></span>
+        <p class="stat-subtitle" id="water-fun"><span class="shimmer shimmer-text"></span></p>
+        <p class="stat-note">~70 mL per 1K tokens · UC Riverside</p>
+      </section>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         Section 4: Topic Clustering
+         ═══════════════════════════════════════════════════════════════════ -->
+    <div class="section-header">
+      <h2 class="section-title">What You Talk About</h2>
+    </div>
+
+    <div id="topics" class="topics-stack">
+      <section id="top-topics" class="card card-topics">
+        <h2 class="card-label">Top 10 Topics</h2>
+        <div class="topic-list" id="topic-list">
+          <div class="shimmer shimmer-topic"></div>
+          <div class="shimmer shimmer-topic"></div>
+          <div class="shimmer shimmer-topic"></div>
+          <div class="shimmer shimmer-topic"></div>
+          <div class="shimmer shimmer-topic"></div>
+          <div class="shimmer shimmer-topic"></div>
+          <div class="shimmer shimmer-topic"></div>
+          <div class="shimmer shimmer-topic"></div>
+          <div class="shimmer shimmer-topic"></div>
+          <div class="shimmer shimmer-topic"></div>
+        </div>
+      </section>
+
+      <section id="categories-streamgraph" class="card card-streamgraph">
+        <h2 class="card-label">Categories Time Machine</h2>
+        <div id="streamgraph-chart" class="chart-shimmer"><div class="shimmer shimmer-chart shimmer-chart-tall"></div></div>
+        <div id="streamgraph-legend"></div>
+      </section>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         Section 5: You and ChatGPT
+         ═══════════════════════════════════════════════════════════════════ -->
+    <div class="section-header">
+      <h2 class="section-title">The Vibes</h2>
+    </div>
+
+    <div id="vibes" class="frustration-stack">
+      <section id="frustration-vs-apologies" class="card card-frustration">
+        <div class="card-header">
+          <h2 class="card-label">Frustration vs Apologies</h2>
+        </div>
+        <div id="frustration-chart" class="chart-shimmer"><div class="shimmer shimmer-chart shimmer-chart-tall"></div></div>
+        <div class="frustration-legend">
+          <span class="legend-item"><span class="legend-color frustration-color"></span>your frustration</span>
+          <span class="legend-item"><span class="legend-color apology-color"></span>ai apologizing</span>
+        </div>
+      </section>
+
+      <section id="frustration-wordcloud" class="card card-wordcloud">
+        <h2 class="card-label">Frustration Word Cloud</h2>
+        <canvas id="frustration-cloud"></canvas>
+      </section>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         Section 6: Tarot, Emojis & Nutrition Label
+         ═══════════════════════════════════════════════════════════════════ -->
+    <section id="tarot-card" class="card card-tarot">
+      <h2 class="card-label">Your Tarot</h2>
+      <div id="tarot-container"><div class="shimmer shimmer-tarot"></div></div>
+    </section>
+
+    <div class="emoji-nutrition-stack">
+      <section id="top-emojis" class="card card-emojis">
+        <div class="card-header">
+          <h2 class="card-label">Emojis</h2>
+          <span class="chart-peak"><span id="emoji-user-label"></span> <span id="emoji-assistant-label"></span></span>
+        </div>
+        <div class="emoji-cloud-wrapper">
+          <canvas id="emoji-cloud"></canvas>
+        </div>
+      </section>
+
+      <section id="nutrition-card" class="card card-nutrition">
+      <div class="nutrition-label" id="nutrition-label">
+        <h2 class="nutrition-title">Nutrition Facts</h2>
+        <p class="nutrition-serving" id="nutrition-serving"><span class="shimmer shimmer-text"></span></p>
+        <div class="nutrition-divider thick"></div>
+        <p class="nutrition-dv">% Daily Value*</p>
+        <div class="nutrition-divider"></div>
+        <div id="nutrition-rows">
+          <div class="shimmer shimmer-nutrition-row"></div>
+          <div class="shimmer shimmer-nutrition-row"></div>
+          <div class="shimmer shimmer-nutrition-row"></div>
+          <div class="shimmer shimmer-nutrition-row"></div>
+          <div class="shimmer shimmer-nutrition-row"></div>
+          <div class="shimmer shimmer-nutrition-row"></div>
+          <div class="shimmer shimmer-nutrition-row"></div>
+          <div class="shimmer shimmer-nutrition-row"></div>
+        </div>
+        <div class="nutrition-divider"></div>
+        <div class="nutrition-row highlight">
+          <span class="nutrition-name">Clear Ask Ratio</span>
+          <span class="nutrition-val" id="clear-ask-ratio"><span class="shimmer shimmer-text-sm"></span></span>
+        </div>
+        <div class="nutrition-divider thick"></div>
+        <p class="nutrition-footnote">* % Daily Value based on your entire ChatGPT history.</p>
+        <p class="nutrition-footnote">† You weren't always right. It just wanted you to feel that way.</p>
+        <p class="nutrition-footnote">‡ OpenAI thanks you for your generous data donation.</p>
+        <p class="nutrition-footnote">§ 90% of that context was ignored after the first 4K tokens.</p>
+      </div>
+    </section>
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    made by <a href="https://x.com/zats" target="_blank" rel="noopener">Sash Zats</a>, December 2025
+  </footer>
+
+  <script src="script.js"></script>
+  <script src="charts.js"></script>
+</body>
+</html>

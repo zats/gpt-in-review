@@ -1,0 +1,225 @@
+{
+  "static": {
+    "firstConversation": {
+      "date": "December 11, 2022",
+      "duration": "2 minutes",
+      "messages": [
+        { "role": "user", "text": "Give me a fun fact of the day" },
+        { "role": "assistant", "text": "I'm sorry, but I am a large language model trained by OpenAI and don't have access to current information..." },
+        { "role": "user", "text": "Give me a fun fact" },
+        { "role": "assistant", "text": "The longest word in the English language is \"pneumonoultramicroscopicsilicovolcanoconiosis.\"" }
+      ]
+    },
+    "overview": {
+      "totalMessages": 51640,
+      "totalConversations": 4033,
+      "userMessages": 12512,
+      "assistantMessages": 28477,
+      "avgPerChat": 12.8
+    },
+    "longestConversation": {
+      "value": "610.8 days",
+      "title": "Concerning Lab Results."
+    },
+    "longestMessage": {
+      "value": "191,404",
+      "title": "PAAS Pricing for Django"
+    },
+    "streak": {
+      "from": "2025-06-11"
+    },
+    "perspective": {
+      "totalWords": "3.67M",
+      "bookPages": "8,897",
+      "warPeace": "6.34×",
+      "cvsReceipt": "3,341",
+      "cvsNote": "3× Golden Gate Bridge",
+      "tokens": "6.67M",
+      "energy": "4.00",
+      "energyFun": "20 hours of karaoke machine",
+      "water": "467",
+      "waterFun": "11 golden retriever baths"
+    },
+    "nutrition": {
+      "serving": "4,033 conversations",
+      "rows": [
+        { "name": "Sycophancy", "sup": "†", "desc": "\"Great question!\"", "val": "14%" },
+        { "name": "Hallucination Risk", "sup": "", "desc": "\"The 1987 study showed...\"", "val": "5%" },
+        { "name": "Micromanagement", "sup": "", "desc": "\"Use exactly 3 paragraphs...\"", "val": "45%" },
+        { "name": "Data Hemorrhage", "sup": "‡", "desc": "\"My email is john@...\"", "val": "395" },
+        { "name": "Context Dumping", "sup": "§", "desc": "\"Here's the full codebase...\"", "val": "43%" },
+        { "name": "Scope Creep", "sup": "", "desc": "\"Also, while you're at it...\"", "val": "24%" },
+        { "name": "ChatGPT-isms", "sup": "", "desc": "\"As an AI language model...\"", "val": "1%" },
+        { "name": "Actual Questions", "sup": "", "desc": "\"How do I fix this bug?\"", "val": "62%" }
+      ],
+      "clearAskRatio": "62%"
+    }
+  },
+  "topics": [
+    { "rank": 1, "name": "Clarification Requests", "pct": 4.5 },
+    { "rank": 2, "name": "Swift and Objective-C", "pct": 3.8 },
+    { "rank": 3, "name": "Critical Analyses", "pct": 3.5 },
+    { "rank": 4, "name": "Cocktail Variations", "pct": 3.4 },
+    { "rank": 5, "name": "Coding Scripts", "pct": 3.3 },
+    { "rank": 6, "name": "Writing Assistance", "pct": 3.2 },
+    { "rank": 7, "name": "Creative Ideas", "pct": 3.1 },
+    { "rank": 8, "name": "Startup Exploration", "pct": 2.7 },
+    { "rank": 9, "name": "iOS Functionality", "pct": 2.7 },
+    { "rank": 10, "name": "Miscellaneous Queries", "pct": 2.7 }
+  ],
+  "charts": {
+    "hourly": {
+      "values": [252, 282, 410, 1045, 681, 1058, 2060, 1924, 2855, 4614, 3446, 3288, 2484, 3873, 2730, 2606, 3174, 3122, 2398, 2207, 2427, 2446, 1530, 608],
+      "labels": ["12a", "1a", "2a", "3a", "4a", "5a", "6a", "7a", "8a", "9a", "10a", "11a", "12p", "1p", "2p", "3p", "4p", "5p", "6p", "7p", "8p", "9p", "10p", "11p"]
+    },
+    "daily": {
+      "values": [6926, 6953, 6452, 6692, 7545, 9154, 7798],
+      "labels": ["M", "T", "W", "T", "F", "S", "S"]
+    },
+    "monthly": {
+      "values": [2740, 2595, 3018, 2729, 3407, 4529, 6219, 6202, 4408, 5531, 8978, 1164],
+      "labels": ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"]
+    },
+    "timeline": {
+      "values": [10, 429, 309, 250, 729, 1129, 401, 148, 455, 373, 1131, 2032, 506, 999, 1725, 719, 600, 511, 385, 337, 150, 590, 420, 835, 648, 1312, 561, 2049, 1400, 1767, 3743, 5734, 5597, 3445, 3980, 6111],
+      "labels": ["Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov"],
+      "years": [2022, 2023, 2023, 2023, 2023, 2023, 2023, 2023, 2023, 2023, 2023, 2023, 2023, 2024, 2024, 2024, 2024, 2024, 2024, 2024, 2024, 2024, 2024, 2024, 2024, 2025, 2025, 2025, 2025, 2025, 2025, 2025, 2025, 2025, 2025, 2025]
+    }
+  },
+  "streamgraph": {
+    "periods": ["2022-P24","2022-P25","2023-P00","2023-P01","2023-P02","2023-P03","2023-P04","2023-P05","2023-P06","2023-P07","2023-P08","2023-P09","2023-P10","2023-P11","2023-P12","2023-P13","2023-P14","2023-P15","2023-P16","2023-P17","2023-P18","2023-P19","2023-P20","2023-P21","2023-P22","2023-P23","2023-P24","2023-P25","2024-P00","2024-P01","2024-P02","2024-P03","2024-P04","2024-P05","2024-P06","2024-P07","2024-P08","2024-P09","2024-P10","2024-P11","2024-P12","2024-P13","2024-P14","2024-P15","2024-P16","2024-P17","2024-P18","2024-P19","2024-P20","2024-P21","2024-P22","2024-P23","2024-P24","2024-P25","2025-P00","2025-P01","2025-P02","2025-P03","2025-P04","2025-P05","2025-P06","2025-P07","2025-P08","2025-P09","2025-P10","2025-P11","2025-P12","2025-P13","2025-P14","2025-P15","2025-P16","2025-P17","2025-P18","2025-P19","2025-P20","2025-P21","2025-P22","2025-P23"],
+    "keys": ["Historical Analysis","Code Simplification","Swift Development","Public Speaking","Recipe Requests","AI Startup Insights","macOS Design","Image Generation","Dining Recommendations","Tax Guidance"],
+    "values": [
+      {"period":"2022-P24","Historical Analysis":1,"Code Simplification":0,"Swift Development":0,"Public Speaking":1,"Recipe Requests":0,"AI Startup Insights":1,"macOS Design":0,"Image Generation":0,"Dining Recommendations":0,"Tax Guidance":0},
+      {"period":"2022-P25","Historical Analysis":1,"Code Simplification":0,"Swift Development":2,"Public Speaking":1,"Recipe Requests":0,"AI Startup Insights":0,"macOS Design":0,"Image Generation":0,"Dining Recommendations":0,"Tax Guidance":0},
+      {"period":"2023-P00","Historical Analysis":8,"Code Simplification":11,"Swift Development":0,"Public Speaking":6,"Recipe Requests":1,"AI Startup Insights":1,"macOS Design":0,"Image Generation":0,"Dining Recommendations":1,"Tax Guidance":1},
+      {"period":"2023-P01","Historical Analysis":4,"Code Simplification":5,"Swift Development":0,"Public Speaking":5,"Recipe Requests":5,"AI Startup Insights":1,"macOS Design":3,"Image Generation":0,"Dining Recommendations":0,"Tax Guidance":0},
+      {"period":"2023-P02","Historical Analysis":6,"Code Simplification":3,"Swift Development":0,"Public Speaking":0,"Recipe Requests":2,"AI Startup Insights":0,"macOS Design":0,"Image Generation":0,"Dining Recommendations":1,"Tax Guidance":0},
+      {"period":"2023-P03","Historical Analysis":8,"Code Simplification":1,"Swift Development":0,"Public Speaking":2,"Recipe Requests":0,"AI Startup Insights":1,"macOS Design":0,"Image Generation":1,"Dining Recommendations":2,"Tax Guidance":0},
+      {"period":"2023-P04","Historical Analysis":15,"Code Simplification":2,"Swift Development":1,"Public Speaking":6,"Recipe Requests":1,"AI Startup Insights":1,"macOS Design":2,"Image Generation":0,"Dining Recommendations":4,"Tax Guidance":0},
+      {"period":"2023-P05","Historical Analysis":3,"Code Simplification":1,"Swift Development":0,"Public Speaking":5,"Recipe Requests":2,"AI Startup Insights":0,"macOS Design":0,"Image Generation":0,"Dining Recommendations":4,"Tax Guidance":0},
+      {"period":"2023-P06","Historical Analysis":7,"Code Simplification":7,"Swift Development":5,"Public Speaking":2,"Recipe Requests":4,"AI Startup Insights":5,"macOS Design":1,"Image Generation":3,"Dining Recommendations":1,"Tax Guidance":0},
+      {"period":"2023-P07","Historical Analysis":9,"Code Simplification":16,"Swift Development":5,"Public Speaking":9,"Recipe Requests":4,"AI Startup Insights":2,"macOS Design":3,"Image Generation":15,"Dining Recommendations":5,"Tax Guidance":0},
+      {"period":"2023-P08","Historical Analysis":2,"Code Simplification":6,"Swift Development":6,"Public Speaking":16,"Recipe Requests":3,"AI Startup Insights":7,"macOS Design":3,"Image Generation":2,"Dining Recommendations":0,"Tax Guidance":0},
+      {"period":"2023-P09","Historical Analysis":10,"Code Simplification":9,"Swift Development":5,"Public Speaking":1,"Recipe Requests":5,"AI Startup Insights":10,"macOS Design":4,"Image Generation":3,"Dining Recommendations":3,"Tax Guidance":1},
+      {"period":"2023-P10","Historical Analysis":4,"Code Simplification":5,"Swift Development":6,"Public Speaking":4,"Recipe Requests":2,"AI Startup Insights":2,"macOS Design":1,"Image Generation":1,"Dining Recommendations":3,"Tax Guidance":3},
+      {"period":"2023-P11","Historical Analysis":1,"Code Simplification":1,"Swift Development":2,"Public Speaking":0,"Recipe Requests":3,"AI Startup Insights":0,"macOS Design":1,"Image Generation":2,"Dining Recommendations":1,"Tax Guidance":1},
+      {"period":"2023-P12","Historical Analysis":6,"Code Simplification":3,"Swift Development":0,"Public Speaking":2,"Recipe Requests":0,"AI Startup Insights":0,"macOS Design":2,"Image Generation":0,"Dining Recommendations":6,"Tax Guidance":0},
+      {"period":"2023-P13","Historical Analysis":4,"Code Simplification":5,"Swift Development":1,"Public Speaking":1,"Recipe Requests":1,"AI Startup Insights":0,"macOS Design":0,"Image Generation":0,"Dining Recommendations":1,"Tax Guidance":0},
+      {"period":"2023-P14","Historical Analysis":4,"Code Simplification":0,"Swift Development":2,"Public Speaking":0,"Recipe Requests":0,"AI Startup Insights":0,"macOS Design":1,"Image Generation":3,"Dining Recommendations":0,"Tax Guidance":0},
+      {"period":"2023-P15","Historical Analysis":15,"Code Simplification":2,"Swift Development":0,"Public Speaking":10,"Recipe Requests":1,"AI Startup Insights":1,"macOS Design":0,"Image Generation":1,"Dining Recommendations":0,"Tax Guidance":0},
+      {"period":"2023-P16","Historical Analysis":14,"Code Simplification":2,"Swift Development":2,"Public Speaking":1,"Recipe Requests":0,"AI Startup Insights":0,"macOS Design":1,"Image Generation":1,"Dining Recommendations":2,"Tax Guidance":0},
+      {"period":"2023-P17","Historical Analysis":8,"Code Simplification":2,"Swift Development":6,"Public Speaking":2,"Recipe Requests":0,"AI Startup Insights":0,"macOS Design":0,"Image Generation":0,"Dining Recommendations":1,"Tax Guidance":1},
+      {"period":"2023-P18","Historical Analysis":6,"Code Simplification":2,"Swift Development":2,"Public Speaking":2,"Recipe Requests":2,"AI Startup Insights":1,"macOS Design":4,"Image Generation":2,"Dining Recommendations":0,"Tax Guidance":0},
+      {"period":"2023-P19","Historical Analysis":7,"Code Simplification":1,"Swift Development":7,"Public Speaking":2,"Recipe Requests":4,"AI Startup Insights":1,"macOS Design":6,"Image Generation":0,"Dining Recommendations":1,"Tax Guidance":3},
+      {"period":"2023-P20","Historical Analysis":13,"Code Simplification":11,"Swift Development":12,"Public Speaking":3,"Recipe Requests":2,"AI Startup Insights":0,"macOS Design":2,"Image Generation":4,"Dining Recommendations":4,"Tax Guidance":1},
+      {"period":"2023-P21","Historical Analysis":9,"Code Simplification":8,"Swift Development":9,"Public Speaking":3,"Recipe Requests":5,"AI Startup Insights":2,"macOS Design":7,"Image Generation":7,"Dining Recommendations":1,"Tax Guidance":2},
+      {"period":"2023-P22","Historical Analysis":13,"Code Simplification":10,"Swift Development":19,"Public Speaking":2,"Recipe Requests":2,"AI Startup Insights":4,"macOS Design":11,"Image Generation":3,"Dining Recommendations":1,"Tax Guidance":3},
+      {"period":"2023-P23","Historical Analysis":11,"Code Simplification":8,"Swift Development":14,"Public Speaking":1,"Recipe Requests":6,"AI Startup Insights":3,"macOS Design":4,"Image Generation":1,"Dining Recommendations":1,"Tax Guidance":0},
+      {"period":"2023-P24","Historical Analysis":3,"Code Simplification":2,"Swift Development":20,"Public Speaking":9,"Recipe Requests":4,"AI Startup Insights":1,"macOS Design":4,"Image Generation":2,"Dining Recommendations":0,"Tax Guidance":0},
+      {"period":"2023-P25","Historical Analysis":4,"Code Simplification":3,"Swift Development":2,"Public Speaking":3,"Recipe Requests":1,"AI Startup Insights":1,"macOS Design":1,"Image Generation":2,"Dining Recommendations":1,"Tax Guidance":2},
+      {"period":"2024-P00","Historical Analysis":7,"Code Simplification":5,"Swift Development":9,"Public Speaking":1,"Recipe Requests":4,"AI Startup Insights":1,"macOS Design":3,"Image Generation":5,"Dining Recommendations":4,"Tax Guidance":2},
+      {"period":"2024-P01","Historical Analysis":6,"Code Simplification":9,"Swift Development":12,"Public Speaking":17,"Recipe Requests":1,"AI Startup Insights":2,"macOS Design":2,"Image Generation":6,"Dining Recommendations":1,"Tax Guidance":1},
+      {"period":"2024-P02","Historical Analysis":7,"Code Simplification":12,"Swift Development":27,"Public Speaking":14,"Recipe Requests":6,"AI Startup Insights":13,"macOS Design":20,"Image Generation":7,"Dining Recommendations":3,"Tax Guidance":6},
+      {"period":"2024-P03","Historical Analysis":11,"Code Simplification":16,"Swift Development":10,"Public Speaking":15,"Recipe Requests":4,"AI Startup Insights":16,"macOS Design":5,"Image Generation":1,"Dining Recommendations":0,"Tax Guidance":2},
+      {"period":"2024-P04","Historical Analysis":15,"Code Simplification":9,"Swift Development":9,"Public Speaking":9,"Recipe Requests":6,"AI Startup Insights":15,"macOS Design":1,"Image Generation":10,"Dining Recommendations":1,"Tax Guidance":5},
+      {"period":"2024-P05","Historical Analysis":4,"Code Simplification":7,"Swift Development":15,"Public Speaking":2,"Recipe Requests":2,"AI Startup Insights":2,"macOS Design":2,"Image Generation":2,"Dining Recommendations":0,"Tax Guidance":4},
+      {"period":"2024-P06","Historical Analysis":11,"Code Simplification":6,"Swift Development":4,"Public Speaking":2,"Recipe Requests":7,"AI Startup Insights":1,"macOS Design":0,"Image Generation":2,"Dining Recommendations":3,"Tax Guidance":3},
+      {"period":"2024-P07","Historical Analysis":9,"Code Simplification":10,"Swift Development":4,"Public Speaking":1,"Recipe Requests":5,"AI Startup Insights":3,"macOS Design":3,"Image Generation":4,"Dining Recommendations":2,"Tax Guidance":0},
+      {"period":"2024-P08","Historical Analysis":12,"Code Simplification":9,"Swift Development":11,"Public Speaking":10,"Recipe Requests":9,"AI Startup Insights":0,"macOS Design":0,"Image Generation":4,"Dining Recommendations":3,"Tax Guidance":2},
+      {"period":"2024-P09","Historical Analysis":12,"Code Simplification":2,"Swift Development":8,"Public Speaking":1,"Recipe Requests":4,"AI Startup Insights":0,"macOS Design":2,"Image Generation":2,"Dining Recommendations":3,"Tax Guidance":1},
+      {"period":"2024-P10","Historical Analysis":9,"Code Simplification":1,"Swift Development":5,"Public Speaking":0,"Recipe Requests":5,"AI Startup Insights":1,"macOS Design":1,"Image Generation":3,"Dining Recommendations":4,"Tax Guidance":1},
+      {"period":"2024-P11","Historical Analysis":1,"Code Simplification":2,"Swift Development":6,"Public Speaking":0,"Recipe Requests":1,"AI Startup Insights":1,"macOS Design":2,"Image Generation":0,"Dining Recommendations":0,"Tax Guidance":0},
+      {"period":"2024-P12","Historical Analysis":4,"Code Simplification":3,"Swift Development":14,"Public Speaking":0,"Recipe Requests":1,"AI Startup Insights":1,"macOS Design":1,"Image Generation":7,"Dining Recommendations":0,"Tax Guidance":0},
+      {"period":"2024-P13","Historical Analysis":2,"Code Simplification":6,"Swift Development":16,"Public Speaking":0,"Recipe Requests":3,"AI Startup Insights":0,"macOS Design":0,"Image Generation":2,"Dining Recommendations":1,"Tax Guidance":5},
+      {"period":"2024-P14","Historical Analysis":6,"Code Simplification":1,"Swift Development":4,"Public Speaking":1,"Recipe Requests":5,"AI Startup Insights":3,"macOS Design":0,"Image Generation":1,"Dining Recommendations":1,"Tax Guidance":0},
+      {"period":"2024-P15","Historical Analysis":5,"Code Simplification":3,"Swift Development":2,"Public Speaking":0,"Recipe Requests":4,"AI Startup Insights":1,"macOS Design":3,"Image Generation":3,"Dining Recommendations":1,"Tax Guidance":0},
+      {"period":"2024-P16","Historical Analysis":1,"Code Simplification":1,"Swift Development":2,"Public Speaking":0,"Recipe Requests":2,"AI Startup Insights":0,"macOS Design":0,"Image Generation":1,"Dining Recommendations":1,"Tax Guidance":0},
+      {"period":"2024-P17","Historical Analysis":4,"Code Simplification":0,"Swift Development":1,"Public Speaking":0,"Recipe Requests":3,"AI Startup Insights":0,"macOS Design":2,"Image Generation":0,"Dining Recommendations":0,"Tax Guidance":0},
+      {"period":"2024-P18","Historical Analysis":3,"Code Simplification":4,"Swift Development":4,"Public Speaking":7,"Recipe Requests":11,"AI Startup Insights":2,"macOS Design":0,"Image Generation":4,"Dining Recommendations":1,"Tax Guidance":2},
+      {"period":"2024-P19","Historical Analysis":13,"Code Simplification":2,"Swift Development":1,"Public Speaking":4,"Recipe Requests":14,"AI Startup Insights":1,"macOS Design":1,"Image Generation":4,"Dining Recommendations":16,"Tax Guidance":4},
+      {"period":"2024-P20","Historical Analysis":11,"Code Simplification":2,"Swift Development":1,"Public Speaking":2,"Recipe Requests":5,"AI Startup Insights":0,"macOS Design":0,"Image Generation":2,"Dining Recommendations":1,"Tax Guidance":3},
+      {"period":"2024-P21","Historical Analysis":3,"Code Simplification":4,"Swift Development":1,"Public Speaking":3,"Recipe Requests":4,"AI Startup Insights":1,"macOS Design":0,"Image Generation":3,"Dining Recommendations":3,"Tax Guidance":2},
+      {"period":"2024-P22","Historical Analysis":9,"Code Simplification":6,"Swift Development":3,"Public Speaking":11,"Recipe Requests":9,"AI Startup Insights":6,"macOS Design":11,"Image Generation":8,"Dining Recommendations":1,"Tax Guidance":1},
+      {"period":"2024-P23","Historical Analysis":11,"Code Simplification":3,"Swift Development":7,"Public Speaking":5,"Recipe Requests":9,"AI Startup Insights":3,"macOS Design":4,"Image Generation":3,"Dining Recommendations":1,"Tax Guidance":0},
+      {"period":"2024-P24","Historical Analysis":9,"Code Simplification":7,"Swift Development":4,"Public Speaking":6,"Recipe Requests":9,"AI Startup Insights":1,"macOS Design":2,"Image Generation":6,"Dining Recommendations":8,"Tax Guidance":4},
+      {"period":"2024-P25","Historical Analysis":5,"Code Simplification":0,"Swift Development":7,"Public Speaking":3,"Recipe Requests":4,"AI Startup Insights":1,"macOS Design":2,"Image Generation":2,"Dining Recommendations":7,"Tax Guidance":2},
+      {"period":"2025-P00","Historical Analysis":13,"Code Simplification":4,"Swift Development":10,"Public Speaking":1,"Recipe Requests":8,"AI Startup Insights":1,"macOS Design":0,"Image Generation":0,"Dining Recommendations":8,"Tax Guidance":6},
+      {"period":"2025-P01","Historical Analysis":10,"Code Simplification":3,"Swift Development":15,"Public Speaking":7,"Recipe Requests":5,"AI Startup Insights":3,"macOS Design":5,"Image Generation":4,"Dining Recommendations":2,"Tax Guidance":9},
+      {"period":"2025-P02","Historical Analysis":8,"Code Simplification":3,"Swift Development":7,"Public Speaking":6,"Recipe Requests":11,"AI Startup Insights":5,"macOS Design":2,"Image Generation":3,"Dining Recommendations":8,"Tax Guidance":13},
+      {"period":"2025-P03","Historical Analysis":5,"Code Simplification":3,"Swift Development":2,"Public Speaking":7,"Recipe Requests":4,"AI Startup Insights":3,"macOS Design":3,"Image Generation":0,"Dining Recommendations":8,"Tax Guidance":4},
+      {"period":"2025-P04","Historical Analysis":4,"Code Simplification":7,"Swift Development":6,"Public Speaking":6,"Recipe Requests":3,"AI Startup Insights":9,"macOS Design":15,"Image Generation":4,"Dining Recommendations":5,"Tax Guidance":2},
+      {"period":"2025-P05","Historical Analysis":8,"Code Simplification":10,"Swift Development":9,"Public Speaking":11,"Recipe Requests":5,"AI Startup Insights":8,"macOS Design":15,"Image Generation":1,"Dining Recommendations":1,"Tax Guidance":5},
+      {"period":"2025-P06","Historical Analysis":5,"Code Simplification":4,"Swift Development":9,"Public Speaking":7,"Recipe Requests":7,"AI Startup Insights":8,"macOS Design":10,"Image Generation":22,"Dining Recommendations":4,"Tax Guidance":14},
+      {"period":"2025-P07","Historical Analysis":6,"Code Simplification":11,"Swift Development":1,"Public Speaking":4,"Recipe Requests":2,"AI Startup Insights":7,"macOS Design":7,"Image Generation":3,"Dining Recommendations":1,"Tax Guidance":4},
+      {"period":"2025-P08","Historical Analysis":4,"Code Simplification":5,"Swift Development":15,"Public Speaking":6,"Recipe Requests":3,"AI Startup Insights":5,"macOS Design":3,"Image Generation":1,"Dining Recommendations":2,"Tax Guidance":1},
+      {"period":"2025-P09","Historical Analysis":9,"Code Simplification":3,"Swift Development":9,"Public Speaking":9,"Recipe Requests":1,"AI Startup Insights":7,"macOS Design":1,"Image Generation":8,"Dining Recommendations":1,"Tax Guidance":3},
+      {"period":"2025-P10","Historical Analysis":16,"Code Simplification":2,"Swift Development":3,"Public Speaking":7,"Recipe Requests":3,"AI Startup Insights":11,"macOS Design":2,"Image Generation":2,"Dining Recommendations":4,"Tax Guidance":16},
+      {"period":"2025-P11","Historical Analysis":3,"Code Simplification":6,"Swift Development":0,"Public Speaking":5,"Recipe Requests":2,"AI Startup Insights":7,"macOS Design":7,"Image Generation":0,"Dining Recommendations":4,"Tax Guidance":9},
+      {"period":"2025-P12","Historical Analysis":16,"Code Simplification":6,"Swift Development":2,"Public Speaking":15,"Recipe Requests":6,"AI Startup Insights":18,"macOS Design":6,"Image Generation":10,"Dining Recommendations":8,"Tax Guidance":3},
+      {"period":"2025-P13","Historical Analysis":11,"Code Simplification":15,"Swift Development":3,"Public Speaking":11,"Recipe Requests":4,"AI Startup Insights":14,"macOS Design":7,"Image Generation":12,"Dining Recommendations":2,"Tax Guidance":0},
+      {"period":"2025-P14","Historical Analysis":7,"Code Simplification":5,"Swift Development":1,"Public Speaking":6,"Recipe Requests":1,"AI Startup Insights":6,"macOS Design":2,"Image Generation":2,"Dining Recommendations":7,"Tax Guidance":1},
+      {"period":"2025-P15","Historical Analysis":6,"Code Simplification":5,"Swift Development":0,"Public Speaking":19,"Recipe Requests":0,"AI Startup Insights":12,"macOS Design":3,"Image Generation":3,"Dining Recommendations":5,"Tax Guidance":4},
+      {"period":"2025-P16","Historical Analysis":4,"Code Simplification":9,"Swift Development":1,"Public Speaking":13,"Recipe Requests":4,"AI Startup Insights":22,"macOS Design":4,"Image Generation":3,"Dining Recommendations":6,"Tax Guidance":9},
+      {"period":"2025-P17","Historical Analysis":6,"Code Simplification":18,"Swift Development":2,"Public Speaking":19,"Recipe Requests":4,"AI Startup Insights":14,"macOS Design":14,"Image Generation":10,"Dining Recommendations":3,"Tax Guidance":4},
+      {"period":"2025-P18","Historical Analysis":4,"Code Simplification":9,"Swift Development":1,"Public Speaking":11,"Recipe Requests":5,"AI Startup Insights":7,"macOS Design":5,"Image Generation":8,"Dining Recommendations":6,"Tax Guidance":3},
+      {"period":"2025-P19","Historical Analysis":7,"Code Simplification":3,"Swift Development":0,"Public Speaking":7,"Recipe Requests":5,"AI Startup Insights":4,"macOS Design":2,"Image Generation":2,"Dining Recommendations":3,"Tax Guidance":1},
+      {"period":"2025-P20","Historical Analysis":7,"Code Simplification":8,"Swift Development":1,"Public Speaking":0,"Recipe Requests":5,"AI Startup Insights":14,"macOS Design":5,"Image Generation":3,"Dining Recommendations":1,"Tax Guidance":5},
+      {"period":"2025-P21","Historical Analysis":36,"Code Simplification":41,"Swift Development":18,"Public Speaking":11,"Recipe Requests":32,"AI Startup Insights":27,"macOS Design":20,"Image Generation":18,"Dining Recommendations":24,"Tax Guidance":11},
+      {"period":"2025-P22","Historical Analysis":20,"Code Simplification":36,"Swift Development":10,"Public Speaking":14,"Recipe Requests":42,"AI Startup Insights":18,"macOS Design":25,"Image Generation":12,"Dining Recommendations":19,"Tax Guidance":5},
+      {"period":"2025-P23","Historical Analysis":33,"Code Simplification":33,"Swift Development":25,"Public Speaking":10,"Recipe Requests":41,"AI Startup Insights":20,"macOS Design":12,"Image Generation":15,"Dining Recommendations":15,"Tax Guidance":5}
+    ]
+  },
+  "frustration": {
+    "summary": {
+      "total_swear_instances": 1569,
+      "total_apology_instances": 520,
+      "total_user_messages": 11416,
+      "total_assistant_messages": 12496,
+      "swear_rate": 13.74,
+      "apology_rate": 4.16,
+      "insight": "You really let loose with 1,569 expletives while the AI barely apologized (520). No judgment here."
+    },
+    "timeline": {
+      "labels": ["Dec 2022","Dec 2022","Jan 2023","Jan 2023","Feb 2023","Feb 2023","Mar 2023","Mar 2023","Apr 2023","Apr 2023","Apr 2023","May 2023","May 2023","Jun 2023","Jun 2023","Jul 2023","Jul 2023","Aug 2023","Aug 2023","Sep 2023","Sep 2023","Oct 2023","Oct 2023","Oct 2023","Nov 2023","Nov 2023","Dec 2023","Dec 2023","Jan 2024","Jan 2024","Feb 2024","Feb 2024","Mar 2024","Mar 2024","Mar 2024","Apr 2024","Apr 2024","May 2024","May 2024","Jun 2024","Jun 2024","Jul 2024","Jul 2024","Aug 2024","Aug 2024","Sep 2024","Sep 2024","Sep 2024","Oct 2024","Oct 2024","Nov 2024","Nov 2024","Dec 2024","Dec 2024","Jan 2025","Jan 2025","Feb 2025","Feb 2025","Mar 2025","Mar 2025","Mar 2025","Apr 2025","Apr 2025","May 2025","May 2025","Jun 2025","Jun 2025","Jul 2025","Jul 2025","Aug 2025","Aug 2025","Aug 2025","Sep 2025","Sep 2025","Oct 2025","Oct 2025","Nov 2025","Nov 2025"],
+      "swears": [0,3,13,0,1,5,4,6,19,6,28,9,7,0,6,6,0,25,17,8,4,18,7,16,2,19,9,12,11,10,18,24,22,21,3,20,11,3,3,5,2,1,3,0,1,0,31,16,15,2,3,19,4,6,5,40,5,0,60,73,6,3,17,12,8,47,18,371,36,52,22,70,23,5,12,30,137,13],
+      "apologies": [2,7,6,1,3,6,7,3,22,17,38,44,5,2,3,4,5,23,3,1,9,5,33,55,2,2,1,2,6,7,5,8,4,0,0,2,2,0,1,1,2,4,2,0,0,0,1,0,0,0,0,5,1,2,16,1,0,11,2,6,6,0,6,16,2,5,1,3,4,2,6,3,1,4,7,2,36,16]
+    },
+    "wordcloud": [
+      {"word": "error", "count": 530}, {"word": "problem", "count": 215}, {"word": "fail", "count": 207}, {"word": "issue", "count": 142}, {"word": "timeout", "count": 65}, {"word": "wrong", "count": 53}, {"word": "crash", "count": 43}, {"word": "slow", "count": 33}, {"word": "failure", "count": 23}, {"word": "bug", "count": 21}, {"word": "fk", "count": 21}, {"word": "mistake", "count": 20}, {"word": "mf", "count": 16}, {"word": "broken", "count": 15}, {"word": "hallucinate", "count": 14}, {"word": "not_working", "count": 8}, {"word": "freeze", "count": 8}, {"word": "revert", "count": 8}, {"word": "c_until", "count": 8}, {"word": "nonsense", "count": 8}, {"word": "made_up", "count": 7}, {"word": "frozen", "count": 7}, {"word": "balls", "count": 5}, {"word": "redo", "count": 5}, {"word": "incorrect", "count": 5}, {"word": "stuck", "count": 5}, {"word": "sh_it", "count": 5}, {"word": "shtags", "count": 4}, {"word": "broke", "count": 4}, {"word": "cumulativeaudio", "count": 4}, {"word": "shtmajakjpubnyu", "count": 4}, {"word": "misleading", "count": 3}, {"word": "shit", "count": 3}, {"word": "doesn't_work", "count": 3}, {"word": "ass", "count": 3}, {"word": "messed_up", "count": 3}, {"word": "wtf", "count": 3}, {"word": "sh:_i_think", "count": 3}, {"word": "garbage", "count": 2}, {"word": "s_hit", "count": 2}, {"word": "shtokenforservice", "count": 2}, {"word": "shtoken", "count": 2}, {"word": "sh.it", "count": 2}, {"word": "bullshit", "count": 2}, {"word": "junk", "count": 2}, {"word": "hang", "count": 2}, {"word": "ffs", "count": 2}, {"word": "shttps", "count": 1}, {"word": "dickens", "count": 1}, {"word": "sh,_italian", "count": 1}, {"word": "f_uk", "count": 1}, {"word": "useless", "count": 1}, {"word": "cumulative", "count": 1}, {"word": "bitchy", "count": 1}, {"word": "fukuyama", "count": 1}, {"word": "cumin", "count": 1}, {"word": "cumbersome", "count": 1}, {"word": "dick", "count": 1}, {"word": "sh_iterating", "count": 1}, {"word": "sh!_it", "count": 1}, {"word": "isn't_working", "count": 1}, {"word": "sh:_it", "count": 1}, {"word": "sh,_it", "count": 1}, {"word": "fucking", "count": 1}
+    ]
+  },
+  "emojis": {
+    "user": {
+      "total": 221,
+      "emojis": [
+        ["😂️", 18], ["❤️", 15], ["🟥️", 14], ["✅️", 12], ["™️", 8],
+        ["©️", 7], ["🙂️", 6], ["👍️", 5], ["📦️", 5], ["🐢️", 4],
+        ["🐇️", 4], ["⚒️", 4], ["⬇️", 4], ["🟩️", 3], ["🔗️", 3],
+        ["🚧️", 3], ["⛔️", 3], ["🚀️", 3], ["🧩️", 3], ["📄️", 3],
+        ["💥️", 3], ["🛡️", 3], ["♻️", 3], ["👬️", 3], ["⚠️", 3],
+        ["🟢️", 3], ["🫗️", 3], ["🔐️", 3], ["👋️", 3], ["😊️", 3],
+        ["🏗️", 3], ["🐠️", 2], ["🦈️", 2], ["🙄️", 2], ["🌀️", 2],
+        ["®️", 2], ["❌️", 2], ["✨️", 2], ["☺️", 2], ["🟨️", 1]
+      ]
+    },
+    "assistant": {
+      "total": 4950,
+      "emojis": [
+        ["✅️", 883], ["⚠️", 191], ["🔴️", 147], ["🔍️", 138], ["❌️", 136],
+        ["↔️", 96], ["🧠️", 95], ["🚀️", 71], ["⚪️", 62], ["🛠️", 59],
+        ["✔️", 56], ["🔧️", 54], ["🎯️", 51], ["🧩️", 47], ["🔹️", 47],
+        ["🦄️", 37], ["💡️", 35], ["🧪️", 32], ["👍️", 31], ["📦️", 27],
+        ["🧭️", 26], ["🟡️", 25], ["🔒️", 24], ["⚙️", 24], ["🟢️", 23],
+        ["🚫️", 23], ["📌️", 23], ["™️", 23], ["🔗️", 22], ["🧱️", 20],
+        ["▶️", 20], ["🔁️", 20], ["😀️", 19], ["👨‍👩‍👦‍👦️", 19], ["🍕️", 18],
+        ["🧽️", 18], ["📄️", 17], ["🔥️", 17], ["📊️", 17], ["📍️", 16]
+      ]
+    }
+  },
+  "tarot": {
+    "image": "tarot_card.png",
+    "title": "The Magician",
+    "subtitle": "Code Alchemist Extraordinaire"
+  }
+}
