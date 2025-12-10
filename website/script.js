@@ -222,98 +222,98 @@
     }
   }
 
-  // Share button functionality
+  // Capture a card as a rounded PNG canvas
+  async function captureCard(card) {
+    const computedStyle = getComputedStyle(card);
+    const borderRadius = parseInt(computedStyle.borderRadius) || 64;
+
+    const canvas = await html2canvas(card, {
+      backgroundColor: null,
+      scale: 2,
+      useCORS: true,
+      logging: false,
+      onclone: (clonedDoc, clonedEl) => {
+        const clonedBtn = clonedEl.querySelector('.share-btn');
+        if (clonedBtn) clonedBtn.style.display = 'none';
+      }
+    });
+
+    const roundedCanvas = document.createElement('canvas');
+    roundedCanvas.width = canvas.width;
+    roundedCanvas.height = canvas.height;
+    const ctx = roundedCanvas.getContext('2d');
+    const scaledRadius = borderRadius * 2;
+
+    ctx.beginPath();
+    ctx.moveTo(scaledRadius, 0);
+    ctx.lineTo(canvas.width - scaledRadius, 0);
+    ctx.quadraticCurveTo(canvas.width, 0, canvas.width, scaledRadius);
+    ctx.lineTo(canvas.width, canvas.height - scaledRadius);
+    ctx.quadraticCurveTo(canvas.width, canvas.height, canvas.width - scaledRadius, canvas.height);
+    ctx.lineTo(scaledRadius, canvas.height);
+    ctx.quadraticCurveTo(0, canvas.height, 0, canvas.height - scaledRadius);
+    ctx.lineTo(0, scaledRadius);
+    ctx.quadraticCurveTo(0, 0, scaledRadius, 0);
+    ctx.closePath();
+    ctx.clip();
+    ctx.drawImage(canvas, 0, 0);
+
+    return roundedCanvas;
+  }
+
+  // Get filename from card
+  function getCardFilename(card) {
+    return (card.id || 'card')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '') + '.png';
+  }
+
+  // Download a data URL as file
+  function downloadDataUrl(dataUrl, filename) {
+    const link = document.createElement('a');
+    link.download = filename;
+    link.href = dataUrl;
+    link.click();
+  }
+
+  // Download button functionality
   function initShareButtons() {
     const isMobile = window.innerWidth <= 768;
     if (isMobile) return;
 
-    // Remove existing share buttons
+    // Remove existing buttons
     document.querySelectorAll('.share-btn').forEach(btn => btn.remove());
 
-    // Get all cards with IDs
+    const downloadSvg = `<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`;
+
+    // Add download buttons to individual cards
     const cards = document.querySelectorAll('.card[id]');
-
-    const shareSvg = `<svg viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>`;
-
     cards.forEach(card => {
       const btn = document.createElement('button');
       btn.className = 'share-btn';
-      btn.innerHTML = shareSvg;
-      btn.setAttribute('aria-label', 'Share this card');
+      btn.innerHTML = downloadSvg;
+      btn.setAttribute('aria-label', 'Download card as image');
 
       btn.addEventListener('click', async (e) => {
         e.stopPropagation();
-        const url = `${window.location.origin}${window.location.pathname.replace(/\/$/, '')}?${card.id}`;
+        btn.style.visibility = 'hidden';
 
-        // Build share text: "GPT in Review: <section> - <card>" or "GPT in Review: <card>" or "GPT in Review"
-        const cardTitle = card.querySelector('.card-label')?.textContent?.trim();
-
-        // Find preceding section header
-        let sectionTitle = null;
-        let el = card.previousElementSibling;
-        while (el) {
-          if (el.classList.contains('section-header')) {
-            sectionTitle = el.querySelector('.section-title')?.textContent?.trim();
-            break;
-          }
-          el = el.previousElementSibling;
+        try {
+          const canvas = await captureCard(card);
+          downloadDataUrl(canvas.toDataURL('image/png'), getCardFilename(card));
+          showToast('Card downloaded');
+        } catch (err) {
+          console.error('Failed to capture card:', err);
+          showToast('Failed to download card');
+        } finally {
+          btn.style.visibility = '';
         }
-
-        let shareText = 'GPT in Review';
-        if (sectionTitle && cardTitle) {
-          shareText = `GPT in Review: ${sectionTitle} - ${cardTitle}`;
-        } else if (cardTitle) {
-          shareText = `GPT in Review: ${cardTitle}`;
-        }
-
-        const twitterUrl = `https://x.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(shareText)}`;
-
-        // Try native share first, fall back to X.com
-        if (navigator.share) {
-          // Pre-open window SYNCHRONOUSLY to avoid popup blocker after async
-          const fallbackWindow = window.open('about:blank', '_blank');
-          const t0 = performance.now();
-
-          try {
-            await navigator.share({ title: shareText, url });
-            // Success - close the fallback window
-            if (fallbackWindow) fallbackWindow.close();
-            return;
-          } catch (err) {
-            // If user cancelled (took >500ms), close window and don't fall back
-            if (err.name === 'AbortError' && (performance.now() - t0) > 500) {
-              if (fallbackWindow) fallbackWindow.close();
-              return;
-            }
-            // Share blocked/failed - redirect fallback window to Twitter
-            if (fallbackWindow) {
-              fallbackWindow.location.href = twitterUrl;
-              return;
-            }
-          }
-        }
-
-        // No navigator.share - open directly
-        window.open(twitterUrl, '_blank');
       });
 
       card.appendChild(btn);
     });
-  }
 
-  function copyToClipboard(text, btn, card) {
-    navigator.clipboard.writeText(text).then(() => {
-      // Show checkmark on button
-      const originalSvg = btn.innerHTML;
-      btn.innerHTML = `<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>`;
-
-      // Show toast notification
-      showToast('Link copied to clipboard');
-
-      setTimeout(() => {
-        btn.innerHTML = originalSvg;
-      }, 1500);
-    });
   }
 
   function showToast(message) {
