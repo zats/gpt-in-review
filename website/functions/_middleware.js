@@ -47,6 +47,17 @@ export async function onRequest(context) {
   const { request, next } = context;
   const url = new URL(request.url);
 
+  // For data.json and other dynamic content, prevent caching
+  const noCacheFiles = ['/data.json', '/tarot_card.png'];
+  if (noCacheFiles.includes(url.pathname)) {
+    const response = await next();
+    const newResponse = new Response(response.body, response);
+    newResponse.headers.set('cache-control', 'no-cache, no-store, must-revalidate');
+    newResponse.headers.set('pragma', 'no-cache');
+    newResponse.headers.set('expires', '0');
+    return newResponse;
+  }
+
   // Only intercept HTML requests to the root path
   if (url.pathname !== '/' && url.pathname !== '') {
     return next();
