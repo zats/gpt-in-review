@@ -89,14 +89,17 @@
     const pick = arr => arr[Math.floor(Math.random() * arr.length)];
     const formatNum = n => n >= 1_000_000 ? `${(n / 1_000_000).toFixed(2)}M` : n >= 1_000 ? `${(n / 1_000).toFixed(1)}K` : String(n);
     // Energy/water ratio formatting (matches Python logic)
+    // Returns null for unusably small ratios so caller can pick different comparison
     const formatRatio = (ratio, plural, singular) => {
+      if (ratio < 0.1) return null;
       if (ratio < 1) return `${ratio.toFixed(1)} ${singular}`;
       if (ratio < 2) return `${ratio.toFixed(1)} ${plural}`;
       return `${Math.round(ratio)} ${plural}`;
     };
     // CVS ratio formatting (matches Python logic)
+    // Returns null for unusably small ratios so caller can pick different comparison
     const formatCvsRatio = (ratio, name) => {
-      if (ratio < 0.1) return 'A modest CVS run';
+      if (ratio < 0.1) return null;
       if (ratio < 2) return `${ratio.toFixed(1)}× ${name}`;
       return `${Math.round(ratio)}× ${name}`;
     };
@@ -120,13 +123,22 @@
     if (bookRatio) bookRatio.textContent = `${bookRatioVal.toFixed(2)}x`;
     if (bookNote) bookNote.textContent = `~${book.words.toLocaleString()} words each`;
 
-    // CVS receipt comparison (random)
-    const cvsComp = pick(p.cvsComparisons);
-    const cvsRatio = p.cvsReceiptFeet / cvsComp.feet;
+    // CVS receipt comparison (random, retry if ratio too small)
     const cvsReceipt = document.getElementById('cvs-receipt');
     if (cvsReceipt) cvsReceipt.innerHTML = `${p.cvsReceiptFeet.toLocaleString()}<span class="big-label">ft</span>`;
     const cvsNote = document.getElementById('cvs-note');
-    if (cvsNote) cvsNote.textContent = formatCvsRatio(cvsRatio, cvsComp.name);
+    if (cvsNote) {
+      // Shuffle and try each comparison until one produces a usable ratio
+      const shuffled = [...p.cvsComparisons].sort(() => Math.random() - 0.5);
+      for (const comp of shuffled) {
+        const ratio = p.cvsReceiptFeet / comp.feet;
+        const text = formatCvsRatio(ratio, comp.name);
+        if (text) {
+          cvsNote.textContent = text;
+          break;
+        }
+      }
+    }
 
     // Tokens
     const totalTokens = document.getElementById('total-tokens-val');
@@ -134,22 +146,38 @@
 
     // Energy: ~18 Wh per 1K tokens
     const energyKwh = (p.totalTokens * 0.018) / 1000;
-    const energyComp = pick(p.energyComparisons);
-    const energyRatio = energyKwh / energyComp.kwh;
     const energyVal = document.getElementById('energy-val');
     if (energyVal) energyVal.innerHTML = `${energyKwh.toFixed(2)}<span class="big-label">kWh</span>`;
     const energyFun = document.getElementById('energy-fun');
-    if (energyFun) energyFun.textContent = formatRatio(energyRatio, energyComp.name, energyComp.singular) || energyComp.singular;
+    if (energyFun) {
+      const shuffled = [...p.energyComparisons].sort(() => Math.random() - 0.5);
+      for (const comp of shuffled) {
+        const ratio = energyKwh / comp.kwh;
+        const text = formatRatio(ratio, comp.name, comp.singular);
+        if (text) {
+          energyFun.textContent = text;
+          break;
+        }
+      }
+    }
 
     // Water: ~1.8 L per kWh
     const waterL = energyKwh * 1.8;
     const waterMl = waterL * 1000;
-    const waterComp = pick(p.waterComparisons);
-    const waterRatio = waterMl / waterComp.ml;
     const waterVal = document.getElementById('water-val');
     if (waterVal) waterVal.innerHTML = `${waterL.toFixed(2)}<span class="big-label">liters</span>`;
     const waterFun = document.getElementById('water-fun');
-    if (waterFun) waterFun.textContent = formatRatio(waterRatio, waterComp.name, waterComp.singular) || waterComp.singular;
+    if (waterFun) {
+      const shuffled = [...p.waterComparisons].sort(() => Math.random() - 0.5);
+      for (const comp of shuffled) {
+        const ratio = waterMl / comp.ml;
+        const text = formatRatio(ratio, comp.name, comp.singular);
+        if (text) {
+          waterFun.textContent = text;
+          break;
+        }
+      }
+    }
 
 
     // Nutrition label

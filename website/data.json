@@ -75,7 +75,6 @@
         { "name": "DeLorean time travels", "singular": "DeLorean time travel", "kwh": 30000 },
         { "name": "lightning bolts", "singular": "lightning bolt", "kwh": 1400 },
         { "name": "toaster strudel preparations", "singular": "toaster strudel preparation", "kwh": 0.5 },
-        { "name": "moments of existential dread", "singular": "moment of existential dread", "kwh": 0.02 },
         { "name": "ISS orbits", "singular": "ISS orbit", "kwh": 2500 },
         { "name": "robot vacuum sessions", "singular": "robot vacuum session", "kwh": 0.3 }
       ],
@@ -83,7 +82,6 @@
         { "name": "golden retriever baths", "singular": "golden retriever bath", "ml": 40000 },
         { "name": "kiddie pools", "singular": "kiddie pool", "ml": 100000 },
         { "name": "fishbowls", "singular": "fishbowl", "ml": 5000 },
-        { "name": "batches of Jell-O", "singular": "batch of Jell-O", "ml": 2000 },
         { "name": "hot tub fills", "singular": "hot tub fill", "ml": 150000 },
         { "name": "beer kegs", "singular": "beer keg", "ml": 58670 },
         { "name": "wine bottles", "singular": "wine bottle", "ml": 750 },
